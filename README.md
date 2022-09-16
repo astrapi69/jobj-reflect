@@ -42,19 +42,19 @@ your project `build.gradle` if you want to import the core functionality of jobj
 define version in file gradle.properties
 
 ```
-javaLibraryTemplateVersion=${latestVersion}
+jobjReflectVersion=${latestVersion}
 ```
 
 or in build.gradle ext area
 
 ```
-    javaLibraryTemplateVersion = "${latestVersion}"
+jobjReflectVersion = "${latestVersion}"
 ```
 
 then add the dependency to the dependencies area
 
 ```
-    implementation("io.github.astrapi69:jobj-reflect:$javaLibraryTemplateVersion")
+    implementation("io.github.astrapi69:jobj-reflect:$jobjReflectVersion")
 ```
 
 ## Maven dependency
