@@ -1,34 +1,28 @@
 /**
  * The MIT License
  *
- * Copyright (C) 2015 Asterios Raptis
+ * Copyright (C) 2022 Asterios Raptis
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute,
- * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package io.github.astrapi69.reflection;
-
-import io.github.astrapi69.lang.ClassExtensions;
-import io.github.astrapi69.lang.ClassType;
-import io.github.astrapi69.lang.ObjectExtensions;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import org.objenesis.instantiator.ObjectInstantiator;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -47,6 +41,17 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
+import org.objenesis.instantiator.ObjectInstantiator;
+
+import io.github.astrapi69.lang.ClassExtensions;
+import io.github.astrapi69.lang.ClassType;
+import io.github.astrapi69.lang.ObjectExtensions;
+import lombok.NonNull;
+import lombok.experimental.UtilityClass;
+import lombok.extern.java.Log;
 
 /**
  * The class {@link ReflectionExtensions} provides utility methods for the java reflection API
@@ -158,10 +163,11 @@ public final class ReflectionExtensions
 	 *            the source
 	 * @return the copy of the given array object
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T[] copyArray(final @NonNull T[] source)
 	{
-		Object copyOfArray = copyOfArray(source);
-		return (T[])copyOfArray;
+		T[] copyOfArray = (T[])copyOfArray(source);
+		return copyOfArray;
 	}
 
 	/**
@@ -348,6 +354,7 @@ public final class ReflectionExtensions
 	 *            the type of the given field value
 	 * @return the new enum object that is a copy of the given enum object
 	 */
+	@SuppressWarnings("unchecked")
 	public static Object copyOfEnumValue(Object value, Class<?> fieldType)
 	{
 		ClassType classType = ObjectExtensions.getClassType(fieldType);
@@ -730,6 +737,7 @@ public final class ReflectionExtensions
 	 * @throws InvocationTargetException
 	 *             is thrown if the underlying constructor throws an exception
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T newInstanceWithClass(final @NonNull Class<T> clazz)
 		throws InstantiationException, IllegalAccessException, NoSuchMethodException,
 		InvocationTargetException
