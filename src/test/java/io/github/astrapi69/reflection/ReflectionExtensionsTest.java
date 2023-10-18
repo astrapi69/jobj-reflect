@@ -40,10 +40,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.list.ListFactory;
@@ -59,6 +62,35 @@ import io.github.astrapi69.test.object.enumtype.Gender;
  */
 public class ReflectionExtensionsTest
 {
+
+	/**
+	 * Test method for {@link ReflectionExtensions}
+	 */
+	@Test
+	@Disabled
+	public void testWithBeanTester()
+	{
+		final BeanTester beanTester = new BeanTester();
+		beanTester.testBean(ReflectionExtensions.class);
+	}
+
+
+	/**
+	 * Test method for {@link ReflectionExtensions#newEmptyArrayInstance(Object[])}
+	 */
+	@Test
+	public void testNewEmptyArrayInstance()
+	{
+		Person[] expected;
+		Person[] actual;
+		Person[] people;
+
+		people = ArrayFactory.newArray(Person.builder().build());
+		actual = ReflectionExtensions.newEmptyArrayInstance(people);
+		assertTrue(actual.length == 0);
+		expected = ArrayFactory.newArray();
+		assertArrayEquals(expected, actual);
+	}
 
 	/**
 	 * Test method for {@link ReflectionExtensions#newArray(Class, int)}
@@ -285,6 +317,27 @@ public class ReflectionExtensionsTest
 
 	/**
 	 * Test method for {@link ReflectionExtensions#getAllDeclaredFieldNames(Class)}
+	 */
+	@Test
+	public void testGetAllDeclaredFieldNamesWithListOfIgnoreFields()
+	{
+		int expected;
+		int actual;
+		String[] allDeclaredFieldnames;
+
+		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Person.class);
+		expected = 6;
+		actual = allDeclaredFieldnames.length;
+		assertEquals(expected, actual);
+
+		allDeclaredFieldnames = ReflectionExtensions.getAllDeclaredFieldNames(Member.class);
+		expected = 9;
+		actual = allDeclaredFieldnames.length;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#getAllDeclaredFieldNames(Class, String...)}
 	 */
 	@Test
 	public void testGetAllDeclaredFieldNames()
@@ -699,13 +752,30 @@ public class ReflectionExtensionsTest
 	@Test
 	public void testNewInstanceClassOfT()
 	{
-		Person expected;
-		Person actual;
+		Optional<Person> expected;
+		Optional<Person> actual;
 
 		final Class<Person> clazz = Person.class;
 		actual = ReflectionExtensions.newInstance(clazz);
 		assertNotNull(actual);
-		expected = new Person();
+		expected = Optional.of(new Person());
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#newInstance(String)}
+	 */
+	@Test
+	public void testNewInstanceClassOfString()
+	{
+		Optional<Person> expected;
+		Optional<Person> actual;
+		String fullyQualifiedClassName;
+
+		fullyQualifiedClassName = "io.github.astrapi69.test.object.Person";
+		actual = ReflectionExtensions.newInstance(fullyQualifiedClassName);
+		assertNotNull(actual);
+		expected = Optional.of(new Person());
 		assertEquals(expected, actual);
 	}
 
@@ -828,14 +898,14 @@ public class ReflectionExtensionsTest
 	@Test
 	public void testNewInstanceClassOfTArray()
 	{
-		int[] expected;
-		int[] actual;
+		Optional<int[]> expected;
+		Optional<int[]> actual;
 
 		final Class<int[]> intArrayClass = int[].class;
 		actual = ReflectionExtensions.newInstance(intArrayClass);
 		assertNotNull(actual);
-		expected = ArrayFactory.newIntArray(0, 0, 0);
-		assertArrayEquals(actual, expected);
+		expected = Optional.of(ArrayFactory.newIntArray(0, 0, 0));
+		assertArrayEquals(actual.get(), expected.get());
 	}
 
 	/**
@@ -844,29 +914,32 @@ public class ReflectionExtensionsTest
 	@Test
 	public void testNewInstanceT()
 	{
-		Object expected;
-		Object actual;
+		Optional<?> expected;
+		Optional<?> actual;
+
 		final A a = new A();
 		actual = ReflectionExtensions.newInstance(a);
 		assertNotNull(actual);
-		expected = new A();
+		expected = Optional.of(new A());
 		assertEquals(expected, actual);
-		expected = A.builder().build();
+		expected = Optional.of(A.builder().build());
 		assertEquals(expected, actual);
 		// new scenario with object array...
 		Integer[] integerArray = ArrayFactory.newArray(1, 2, 3);
 		actual = ReflectionExtensions.newInstance(integerArray);
 		assertNotNull(actual);
-		assertTrue(actual instanceof Integer[]);
-		Integer[] integerArrayActual = (Integer[])actual;
+		assertTrue(actual.isPresent());
+		assertTrue(actual.get() instanceof Integer[]);
+		Integer[] integerArrayActual = (Integer[])actual.get();
 		Integer[] integerArrayExpected = ArrayFactory.newArray(null, null, null, null);
 		assertTrue(Arrays.deepEquals(integerArrayActual, integerArrayExpected));
 		// new scenario with primitive array...
 		int[] intArray = ArrayFactory.newIntArray(1, 2, 3);
 		actual = ReflectionExtensions.newInstance(intArray);
 		assertNotNull(actual);
-		assertTrue(actual instanceof int[]);
-		int[] intArrayActual = (int[])actual;
+		assertTrue(actual.isPresent());
+		assertTrue(actual.get() instanceof int[]);
+		int[] intArrayActual = (int[])actual.get();
 		int[] intArrayExpected = ArrayFactory.newIntArray(0, 0, 0);
 		assertTrue(Arrays.equals(intArrayActual, intArrayExpected));
 	}
@@ -948,7 +1021,7 @@ public class ReflectionExtensionsTest
 	 * Test method for {@link ReflectionExtensions#setFieldValue(Object, Object, Field)}
 	 *
 	 * @throws IllegalAccessException
-	 *             is thrown if an illegal on create an instance or access a method
+	 *             is thrown if an illegal on create an instance or access of a method
 	 * @throws NoSuchFieldException
 	 *             is thrown if no such field exists.
 	 * @throws SecurityException
@@ -961,21 +1034,24 @@ public class ReflectionExtensionsTest
 		String expected;
 		String actual;
 		Person person;
-		Person destination;
+		Optional<Person> destination;
 		Field declaredField;
+
 
 		expected = "Alex";
 		person = Person.builder().name(expected).build();
 		destination = ReflectionExtensions.newInstance(Person.class);
-		declaredField = ReflectionExtensions.getDeclaredField(destination, "name");
-		ReflectionExtensions.setFieldValue(person, destination, declaredField);
-		actual = destination.getName();
+		assertTrue(destination.isPresent());
+		Person destinationPerson = destination.get();
+		declaredField = ReflectionExtensions.getDeclaredField(destinationPerson, "name");
+		ReflectionExtensions.setFieldValue(person, destinationPerson, declaredField);
+		actual = destinationPerson.getName();
 		assertEquals(expected, actual);
 
 		person.setGender(Gender.FEMALE);
-		declaredField = ReflectionExtensions.getDeclaredField(destination, "gender");
-		ReflectionExtensions.setFieldValue(person, destination, declaredField);
-		assertEquals(destination.getGender(), person.getGender());
+		declaredField = ReflectionExtensions.getDeclaredField(destinationPerson, "gender");
+		ReflectionExtensions.setFieldValue(person, destinationPerson, declaredField);
+		assertEquals(destinationPerson.getGender(), person.getGender());
 
 		PrimitiveArrays primitiveArrays = PrimitiveArrays.builder()
 			.booleanArray(new boolean[] { false, true }).build();

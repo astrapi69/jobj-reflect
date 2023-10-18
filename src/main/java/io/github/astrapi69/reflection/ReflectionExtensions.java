@@ -151,7 +151,7 @@ public final class ReflectionExtensions
 	@SuppressWarnings("unchecked")
 	public static <T> T[] newEmptyArrayInstance(final @NonNull T[] source)
 	{
-		return (T[])newArrayInstance(source.getClass().getComponentType(), source.length);
+		return (T[])newArrayInstance(source.getClass().getComponentType(), 0);
 	}
 
 	/**
@@ -625,7 +625,7 @@ public final class ReflectionExtensions
 	 * @return the new instance
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T newInstance(final @NonNull T object)
+	public static <T> Optional<T> newInstance(final @NonNull T object)
 	{
 		Class<?> clazz = object.getClass();
 		ClassType classType = ClassExtensions.getClassType(clazz);
@@ -634,24 +634,24 @@ public final class ReflectionExtensions
 			case MAP :
 				if (clazz.equals(Map.class))
 				{
-					return (T)new HashMap<>();
+					return Optional.of((T)new HashMap<>());
 				}
 			case COLLECTION :
 				if (clazz.equals(Set.class))
 				{
-					return (T)new HashSet();
+					return Optional.of((T)new HashSet<>());
 				}
 				if (clazz.equals(List.class))
 				{
-					return (T)new ArrayList<>();
+					return Optional.of((T)new ArrayList<>());
 				}
 				if (clazz.equals(Queue.class))
 				{
-					return (T)new LinkedList<>();
+					return Optional.of((T)new LinkedList<>());
 				}
 			case ARRAY :
 				int length = Array.getLength(object);
-				return (T)Array.newInstance(clazz.getComponentType(), length);
+				return Optional.of((T)Array.newInstance(clazz.getComponentType(), length));
 
 			default :
 				return newInstance((Class<T>)object.getClass());
@@ -670,21 +670,46 @@ public final class ReflectionExtensions
 	 *            the Class object
 	 * @return the new instance
 	 */
-	public static <T> T newInstance(final @NonNull Class<T> clazz)
+	public static <T> Optional<T> newInstance(final @NonNull Class<T> clazz)
 	{
-		T newInstance = null;
+		Optional<T> newInstance = Optional.empty();
 		Optional<T> optionalNewInstance;
 		optionalNewInstance = forceNewInstanceWithClass(clazz);
 		if (optionalNewInstance.isPresent())
 		{
-			return optionalNewInstance.get();
+			return optionalNewInstance;
 		}
 		optionalNewInstance = forceNewInstanceWithObjenesis(clazz);
 		if (optionalNewInstance.isPresent())
 		{
-			return optionalNewInstance.get();
+			return optionalNewInstance;
 		}
 		return newInstance;
+	}
+
+	/**
+	 * Factory method for create a new instance from the given {@link String} object that represents
+	 * the fully qualified name of the class that have to be instantiated. <br>
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param fullyQualifiedClassName
+	 *            The fully qualified name of the class
+	 * @return an {@link Optional} object that contains the new instance or is empty if the attempt
+	 *         to instantiate failed
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Optional<T> newInstance(final @NonNull String fullyQualifiedClassName)
+	{
+		try
+		{
+			Class<T> aClass = (Class<T>)ClassExtensions.forName(fullyQualifiedClassName);
+			return newInstance(aClass);
+		}
+		catch (ClassNotFoundException e)
+		{
+			return Optional.empty();
+		}
 	}
 
 	private static <T> Optional<T> forceNewInstanceWithClass(final @NonNull Class<T> clazz)

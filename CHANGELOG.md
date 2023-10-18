@@ -4,7 +4,19 @@
 Version 2.1-SNAPSHOT
 -------------
 
+ADDED:
 
+- new factory method for instantiation of an object with the fully qualified name of the class
+
+CHANGED:
+
+- update of gradle to new version 8.4
+- update of gradle plugin dependency io.freefair.gradle:lombok-plugin to new version 8.4
+- update of gradle plugin dependency com.github.ben-manes.versions.gradle.plugin to new version 0.49.0
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new version 6.22.0
+- update of dependency jobj-core to new minor version 8.1
+- update of test dependency test-object to new major version 8
+- all factory methods for instantiation of an object return now an Optional object
 
 Version 2
 -------------
