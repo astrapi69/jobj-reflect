@@ -44,12 +44,14 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
 
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.list.ListFactory;
+import io.github.astrapi69.collection.map.MapFactory;
+import io.github.astrapi69.collection.pair.KeyValuePair;
+import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.test.object.A;
 import io.github.astrapi69.test.object.Member;
 import io.github.astrapi69.test.object.Person;
@@ -67,7 +69,6 @@ public class ReflectionExtensionsTest
 	 * Test method for {@link ReflectionExtensions}
 	 */
 	@Test
-	@Disabled
 	public void testWithBeanTester()
 	{
 		final BeanTester beanTester = new BeanTester();
@@ -108,6 +109,9 @@ public class ReflectionExtensionsTest
 		actual = ReflectionExtensions.copyOfArray(expected);
 		assertNull(actual);
 
+		// new scenario ...
+		actual = ReflectionExtensions.newArray(boolean.class, length);
+		assertNull(actual);
 		// new scenario ...
 		expected = ReflectionExtensions.newArray(boolean[].class, length);
 		actual = ReflectionExtensions.copyOfArray(expected);
@@ -292,13 +296,34 @@ public class ReflectionExtensionsTest
 	{
 		String expected;
 		String actual;
-		final Person alex = Person.builder().name("Alex").build();
-		final Person nik = Person.builder().name("Nik").build();
+		Person person;
+		Person anotherPerson;
+		Field declaredField;
+		// new scenario ...
 		expected = "Alex";
-		Field declaredField = ReflectionExtensions.getDeclaredField(alex, "name");
-		ReflectionExtensions.copyFieldValue(alex, nik, declaredField);
-		actual = nik.getName();
+		person = Person.builder().name(expected).build();
+		anotherPerson = Person.builder().name("Nik").build();
+		declaredField = ReflectionExtensions.getDeclaredField(person, "name");
+		ReflectionExtensions.copyFieldValue(person, anotherPerson, declaredField);
+		actual = anotherPerson.getName();
 		assertEquals(expected, actual);
+		// new scenario ...
+		expected = null;
+		person = Person.builder().name(expected).build();
+		anotherPerson = Person.builder().name("Nik").build();
+		declaredField = ReflectionExtensions.getDeclaredField(person, "name");
+		ReflectionExtensions.copyFieldValue(person, anotherPerson, declaredField);
+		actual = anotherPerson.getName();
+		assertEquals(expected, actual);
+		// new scenario with final field ...
+		Licht wohnZimmer;
+		Licht kueche;
+
+		wohnZimmer = Licht.builder().an(true).build();
+		kueche = Licht.builder().build();
+		declaredField = ReflectionExtensions.getDeclaredField(wohnZimmer, "an");
+		ReflectionExtensions.copyFieldValue(wohnZimmer, kueche, declaredField);
+		assertEquals(kueche.isAn(), false);
 	}
 
 	/**
@@ -777,6 +802,12 @@ public class ReflectionExtensionsTest
 		assertNotNull(actual);
 		expected = Optional.of(new Person());
 		assertEquals(expected, actual);
+
+		fullyQualifiedClassName = "no.qualified.class";
+		actual = ReflectionExtensions.newInstance(fullyQualifiedClassName);
+		assertNotNull(actual);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
 	}
 
 	/**
@@ -911,13 +942,25 @@ public class ReflectionExtensionsTest
 	/**
 	 * Test method for {@link ReflectionExtensions#newInstance(Object)}
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testNewInstanceT()
 	{
 		Optional<?> expected;
 		Optional<?> actual;
+		A a;
+		KeyValuePair<String, Integer> firstEntry;
+		Map<String, Integer> map;
+		Map<String, Integer> mapActual;
+		Map<String, Integer> mapExpected;
+		List<A> list;
+		List<A> listActual;
+		List<A> listExpected;
+		Set<A> set;
+		Set<A> setActual;
+		Set<A> setExpected;
 
-		final A a = new A();
+		a = new A();
 		actual = ReflectionExtensions.newInstance(a);
 		assertNotNull(actual);
 		expected = Optional.of(new A());
@@ -933,7 +976,7 @@ public class ReflectionExtensionsTest
 		Integer[] integerArrayActual = (Integer[])actual.get();
 		Integer[] integerArrayExpected = ArrayFactory.newArray(null, null, null, null);
 		assertTrue(Arrays.deepEquals(integerArrayActual, integerArrayExpected));
-		// new scenario with primitive array...
+		// new scenario with a primitive array...
 		int[] intArray = ArrayFactory.newIntArray(1, 2, 3);
 		actual = ReflectionExtensions.newInstance(intArray);
 		assertNotNull(actual);
@@ -942,6 +985,70 @@ public class ReflectionExtensionsTest
 		int[] intArrayActual = (int[])actual.get();
 		int[] intArrayExpected = ArrayFactory.newIntArray(0, 0, 0);
 		assertTrue(Arrays.equals(intArrayActual, intArrayExpected));
+		// new scenario with hashmap ...
+		firstEntry = KeyValuePair.<String, Integer> builder().key("foo").value(1).build();
+		map = MapFactory.newHashMap(ListFactory.newArrayList(firstEntry));
+		actual = ReflectionExtensions.newInstance(map);
+		assertNotNull(actual);
+		assertTrue(actual.isPresent());
+		assertTrue(actual.get() instanceof Map);
+		mapActual = (Map<String, Integer>)actual.get();
+		mapExpected = MapFactory.newHashMap(ListFactory.newArrayList());
+		assertEquals(mapActual, mapExpected);
+		// new scenario with linked hashmap ...
+		map = MapFactory.newLinkedHashMap(ListFactory.newArrayList(firstEntry));
+		actual = ReflectionExtensions.newInstance(map);
+		assertNotNull(actual);
+		assertTrue(actual.isPresent());
+		assertTrue(actual.get() instanceof Map);
+		mapActual = (Map<String, Integer>)actual.get();
+		mapExpected = MapFactory.newLinkedHashMap(ListFactory.newArrayList());
+		assertEquals(mapActual, mapExpected);
+		// new scenario with tree hashmap ...
+		map = MapFactory.newTreeMap(ListFactory.newArrayList(firstEntry));
+		actual = ReflectionExtensions.newInstance(map);
+		assertNotNull(actual);
+		assertTrue(actual.isPresent());
+		assertTrue(actual.get() instanceof Map);
+		mapActual = (Map<String, Integer>)actual.get();
+		mapExpected = MapFactory.newTreeMap(ListFactory.newArrayList());
+		assertEquals(mapActual, mapExpected);
+		// new scenario with array List ...
+		list = ListFactory.newArrayList(a);
+		actual = ReflectionExtensions.newInstance(list);
+		assertNotNull(actual);
+		assertTrue(actual.isPresent());
+		assertTrue(actual.get() instanceof List);
+		listActual = (List<A>)actual.get();
+		listExpected = ListFactory.newArrayList();
+		assertEquals(listActual, listExpected);
+		// new scenario with linked List ...
+		list = ListFactory.newLinkedList(a);
+		actual = ReflectionExtensions.newInstance(list);
+		assertNotNull(actual);
+		assertTrue(actual.isPresent());
+		assertTrue(actual.get() instanceof List);
+		listActual = (List<A>)actual.get();
+		listExpected = ListFactory.newLinkedList();
+		assertEquals(listActual, listExpected);
+		// new scenario with HashSet ...
+		set = SetFactory.newHashSet(a);
+		actual = ReflectionExtensions.newInstance(set);
+		assertNotNull(actual);
+		assertTrue(actual.isPresent());
+		assertTrue(actual.get() instanceof Set);
+		setActual = (Set<A>)actual.get();
+		setExpected = SetFactory.newHashSet();
+		assertEquals(setActual, setExpected);
+		// new scenario with linked HashSet ...
+		set = SetFactory.newLinkedHashSet(a);
+		actual = ReflectionExtensions.newInstance(set);
+		assertNotNull(actual);
+		assertTrue(actual.isPresent());
+		assertTrue(actual.get() instanceof Set);
+		setActual = (Set<A>)actual.get();
+		setExpected = SetFactory.newLinkedHashSet();
+		assertEquals(setActual, setExpected);
 	}
 
 	/**

@@ -33,13 +33,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.objenesis.Objenesis;
@@ -50,16 +54,17 @@ import io.github.astrapi69.lang.ClassExtensions;
 import io.github.astrapi69.lang.ClassType;
 import io.github.astrapi69.lang.ObjectExtensions;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
 
 /**
  * The class {@link ReflectionExtensions} provides utility methods for the java reflection API
  */
-@UtilityClass
-@Log
 public final class ReflectionExtensions
 {
+	private static final Logger log = Logger.getLogger(ReflectionExtensions.class.getName());
+
+	private ReflectionExtensions()
+	{
+	}
 
 	/**
 	 * Creates a new array instance from the same type as the given {@link Class} and the given
@@ -254,7 +259,7 @@ public final class ReflectionExtensions
 	{
 		field.setAccessible(true);
 		Object newValue = field.get(source);
-		if (newValue == null || Modifier.isFinal(field.getModifiers()))
+		if (Modifier.isFinal(field.getModifiers()))
 		{
 			return true;
 		}
@@ -632,27 +637,32 @@ public final class ReflectionExtensions
 		switch (classType)
 		{
 			case MAP :
-				if (clazz.equals(Map.class))
+				if (clazz.equals(LinkedHashMap.class))
 				{
-					return Optional.of((T)new HashMap<>());
+					return Optional.of((T)new LinkedHashMap<>());
 				}
+				if (clazz.equals(TreeMap.class))
+				{
+					return Optional.of((T)new TreeMap<>());
+				}
+				return Optional.of((T)new HashMap<>());
 			case COLLECTION :
-				if (clazz.equals(Set.class))
+				if (clazz.equals(HashSet.class))
 				{
 					return Optional.of((T)new HashSet<>());
 				}
-				if (clazz.equals(List.class))
+				if (clazz.equals(LinkedHashSet.class))
 				{
-					return Optional.of((T)new ArrayList<>());
+					return Optional.of((T)new LinkedHashSet<>());
 				}
-				if (clazz.equals(Queue.class))
+				if (clazz.equals(LinkedList.class))
 				{
 					return Optional.of((T)new LinkedList<>());
 				}
+				return Optional.of((T)new ArrayList<>());
 			case ARRAY :
 				int length = Array.getLength(object);
 				return Optional.of((T)Array.newInstance(clazz.getComponentType(), length));
-
 			default :
 				return newInstance((Class<T>)object.getClass());
 		}

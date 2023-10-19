@@ -4,7 +4,13 @@
 Version 2.2-SNAPSHOT
 -------------
 
+ADDED:
 
+- new test dependency silly-bean for unit testing
+
+CHANGED:
+
+- increase code coverage
 
 Version 2.1
 -------------
