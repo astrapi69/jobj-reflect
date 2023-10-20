@@ -32,25 +32,12 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import org.objenesis.instantiator.ObjectInstantiator;
-
-import io.github.astrapi69.lang.ClassExtensions;
 import io.github.astrapi69.lang.ClassType;
 import io.github.astrapi69.lang.ObjectExtensions;
 import lombok.NonNull;
@@ -77,11 +64,13 @@ public final class ReflectionExtensions
 	 * @param length
 	 *            the length of the array
 	 * @return the new array instance
+	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T[] newArrayInstance(final @NonNull Class<T> cls, final int length)
 	{
-		return (T[])Array.newInstance(cls, length);
+		return InstanceFactory.newArrayInstance(cls, length);
 	}
 
 	/**
@@ -92,55 +81,12 @@ public final class ReflectionExtensions
 	 * @param length
 	 *            the length of the array
 	 * @return the new array instance of the given array {@link Class} and the given length
+	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
 	 */
+	@Deprecated
 	public static Object newArray(final @NonNull Class<?> cls, final int length)
 	{
-		if (!cls.isArray())
-		{
-			return null;
-		}
-		Object destinationArray = null;
-		Class<?> arrayType = cls.getComponentType();
-		if (arrayType.isPrimitive())
-		{
-			if ("boolean".equals(arrayType.getName()))
-			{
-				destinationArray = new boolean[length];
-			}
-			if ("byte".equals(arrayType.getName()))
-			{
-				destinationArray = new byte[length];
-			}
-			if ("char".equals(arrayType.getName()))
-			{
-				destinationArray = new char[length];
-			}
-			if ("short".equals(arrayType.getName()))
-			{
-				destinationArray = new short[length];
-			}
-			if ("int".equals(arrayType.getName()))
-			{
-				destinationArray = new int[length];
-			}
-			if ("long".equals(arrayType.getName()))
-			{
-				destinationArray = new long[length];
-			}
-			if ("float".equals(arrayType.getName()))
-			{
-				destinationArray = new float[length];
-			}
-			if ("double".equals(arrayType.getName()))
-			{
-				destinationArray = new double[length];
-			}
-		}
-		else
-		{
-			destinationArray = Array.newInstance(cls, length);
-		}
-		return destinationArray;
+		return InstanceFactory.newArray(cls, length);
 	}
 
 	/**
@@ -152,11 +98,13 @@ public final class ReflectionExtensions
 	 * @param source
 	 *            the source array
 	 * @return the new empty array instance
+	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T[] newEmptyArrayInstance(final @NonNull T[] source)
 	{
-		return (T[])newArrayInstance(source.getClass().getComponentType(), 0);
+		return InstanceFactory.newEmptyArrayInstance(source);
 	}
 
 	/**
@@ -628,44 +576,13 @@ public final class ReflectionExtensions
 	 * @param object
 	 *            the object
 	 * @return the new instance
+	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
-	public static <T> Optional<T> newInstance(final @NonNull T object)
+	public static <T> Optional<T> newInstance(final @NonNull T object, Object... initArgs)
 	{
-		Class<?> clazz = object.getClass();
-		ClassType classType = ClassExtensions.getClassType(clazz);
-		switch (classType)
-		{
-			case MAP :
-				if (clazz.equals(LinkedHashMap.class))
-				{
-					return Optional.of((T)new LinkedHashMap<>());
-				}
-				if (clazz.equals(TreeMap.class))
-				{
-					return Optional.of((T)new TreeMap<>());
-				}
-				return Optional.of((T)new HashMap<>());
-			case COLLECTION :
-				if (clazz.equals(HashSet.class))
-				{
-					return Optional.of((T)new HashSet<>());
-				}
-				if (clazz.equals(LinkedHashSet.class))
-				{
-					return Optional.of((T)new LinkedHashSet<>());
-				}
-				if (clazz.equals(LinkedList.class))
-				{
-					return Optional.of((T)new LinkedList<>());
-				}
-				return Optional.of((T)new ArrayList<>());
-			case ARRAY :
-				int length = Array.getLength(object);
-				return Optional.of((T)Array.newInstance(clazz.getComponentType(), length));
-			default :
-				return newInstance((Class<T>)object.getClass());
-		}
+		return InstanceFactory.newGenericInstance(object, initArgs);
 	}
 
 	/**
@@ -679,22 +596,12 @@ public final class ReflectionExtensions
 	 * @param clazz
 	 *            the Class object
 	 * @return the new instance
+	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
 	 */
-	public static <T> Optional<T> newInstance(final @NonNull Class<T> clazz)
+	@Deprecated
+	public static <T> Optional<T> newInstance(final @NonNull Class<T> clazz, Object... initArgs)
 	{
-		Optional<T> newInstance = Optional.empty();
-		Optional<T> optionalNewInstance;
-		optionalNewInstance = forceNewInstanceWithClass(clazz);
-		if (optionalNewInstance.isPresent())
-		{
-			return optionalNewInstance;
-		}
-		optionalNewInstance = forceNewInstanceWithObjenesis(clazz);
-		if (optionalNewInstance.isPresent())
-		{
-			return optionalNewInstance;
-		}
-		return newInstance;
+		return InstanceFactory.newInstance(clazz, initArgs);
 	}
 
 	/**
@@ -707,50 +614,14 @@ public final class ReflectionExtensions
 	 *            The fully qualified name of the class
 	 * @return an {@link Optional} object that contains the new instance or is empty if the attempt
 	 *         to instantiate failed
+	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
-	public static <T> Optional<T> newInstance(final @NonNull String fullyQualifiedClassName)
+	public static <T> Optional<T> newInstance(final @NonNull String fullyQualifiedClassName,
+		Object... initArgs)
 	{
-		try
-		{
-			Class<T> aClass = (Class<T>)ClassExtensions.forName(fullyQualifiedClassName);
-			return newInstance(aClass);
-		}
-		catch (ClassNotFoundException e)
-		{
-			return Optional.empty();
-		}
-	}
-
-	private static <T> Optional<T> forceNewInstanceWithClass(final @NonNull Class<T> clazz)
-	{
-
-		Optional<T> optionalNewInstance = Optional.empty();
-		try
-		{
-			optionalNewInstance = Optional.of(newInstanceWithClass(clazz));
-		}
-		catch (Exception | Error e)
-		{
-			log.log(Level.INFO, "Failed to create new instance with method Class.newInstance()", e);
-		}
-		return optionalNewInstance;
-	}
-
-	private static <T> Optional<T> forceNewInstanceWithObjenesis(final @NonNull Class<T> clazz)
-	{
-
-		Optional<T> optionalNewInstance = Optional.empty();
-		try
-		{
-			optionalNewInstance = Optional.of(newInstanceWithObjenesis(clazz));
-		}
-		catch (Exception | Error e)
-		{
-			log.log(Level.INFO,
-				"Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
-		}
-		return optionalNewInstance;
+		return InstanceFactory.newInstance(fullyQualifiedClassName, initArgs);
 	}
 
 	/**
@@ -760,6 +631,9 @@ public final class ReflectionExtensions
 	 *            the generic type
 	 * @param clazz
 	 *            the Class object
+	 * @param initArgs
+	 *            an optional array of objects to be passed as arguments to the constructor call
+	 *
 	 * @return the new instance
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible
@@ -771,48 +645,15 @@ public final class ReflectionExtensions
 	 *             is thrown if a matching method is not found
 	 * @throws InvocationTargetException
 	 *             is thrown if the underlying constructor throws an exception
+	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
-	public static <T> T newInstanceWithClass(final @NonNull Class<T> clazz)
+	public static <T> T newInstanceWithClass(final @NonNull Class<T> clazz, Object... initArgs)
 		throws InstantiationException, IllegalAccessException, NoSuchMethodException,
 		InvocationTargetException
 	{
-		ClassType classType = ClassExtensions.getClassType(clazz);
-		switch (classType)
-		{
-			case MAP :
-				if (clazz.equals(Map.class))
-				{
-					return (T)new HashMap<>();
-				}
-			case COLLECTION :
-				if (clazz.equals(Set.class))
-				{
-					return (T)new HashSet<>();
-				}
-				if (clazz.equals(List.class))
-				{
-					return (T)new ArrayList<>();
-				}
-				if (clazz.equals(Queue.class))
-				{
-					return (T)new LinkedList<>();
-				}
-			case ARRAY :
-				int length = 3;
-				return (T)Array.newInstance(clazz.getComponentType(), length);
-			case ANNOTATION :
-			case ANONYMOUS :
-			case DEFAULT :
-			case ENUM :
-			case INTERFACE :
-			case LOCAL :
-			case MEMBER :
-			case PRIMITIVE :
-			case SYNTHETIC :
-			default :
-				return clazz.getDeclaredConstructor().newInstance();
-		}
+		return InstanceFactory.newInstanceWithClass(clazz, initArgs);
 	}
 
 	/**
@@ -823,12 +664,12 @@ public final class ReflectionExtensions
 	 * @param clazz
 	 *            the Class object
 	 * @return the new instance
+	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
 	 */
+	@Deprecated
 	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
 	{
-		Objenesis objenesis = new ObjenesisStd();
-		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
-		return instantiator.newInstance();
+		return InstanceFactory.newInstanceWithObjenesis(clazz);
 	}
 
 	/**

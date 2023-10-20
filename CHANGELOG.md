@@ -6,11 +6,13 @@ Version 2.2-SNAPSHOT
 
 ADDED:
 
+- new factory class InstanceFactory for creating instances from class objects
 - new test dependency silly-bean for unit testing
 
 CHANGED:
 
 - increase code coverage
+- moved all factory methods from class ReflectionExtensions to new factory class InstanceFactory and tagged them as deprecated
 
 Version 2.1
 -------------
