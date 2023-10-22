@@ -7,6 +7,7 @@ Version 2.2-SNAPSHOT
 ADDED:
 
 - new factory class InstanceFactory for creating instances from class objects
+- new method in class InstanceFactory that resolves an array class types of the given object array
 - new test dependency silly-bean for unit testing
 
 CHANGED:

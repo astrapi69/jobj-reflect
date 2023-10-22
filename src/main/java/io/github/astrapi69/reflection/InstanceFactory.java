@@ -67,7 +67,6 @@ public final class InstanceFactory
 	 *            The fully qualified name of the class
 	 * @param initArgs
 	 *            an optional array of objects to be passed as arguments to the constructor call
-	 *
 	 * @return an {@link Optional} object that contains the new instance or is empty if the attempt
 	 *         to instantiate failed
 	 */
@@ -188,7 +187,6 @@ public final class InstanceFactory
 	 *            the object
 	 * @param initArgs
 	 *            an optional array of objects to be passed as arguments to the constructor call
-	 *
 	 * @return the new instance
 	 */
 	@SuppressWarnings("unchecked")
@@ -242,7 +240,6 @@ public final class InstanceFactory
 	 *            the Class object
 	 * @param initArgs
 	 *            an optional array of objects to be passed as arguments to the constructor call
-	 *
 	 * @return the new instance
 	 */
 	public static <T> Optional<T> newInstance(final @NonNull Class<T> clazz, Object... initArgs)
@@ -319,14 +316,13 @@ public final class InstanceFactory
 	 *            the Class object
 	 * @param initArgs
 	 *            an optional array of objects to be passed as arguments to the constructor call
-	 *
 	 * @return the new instance
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
 	 * @throws InstantiationException
 	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
 	 *             array class, a primitive type, or void; or if the class has no default
 	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible
 	 * @throws NoSuchMethodException
 	 *             is thrown if a matching method is not found
 	 * @throws InvocationTargetException
@@ -371,7 +367,29 @@ public final class InstanceFactory
 			case PRIMITIVE :
 			case SYNTHETIC :
 			default :
-				return clazz.getDeclaredConstructor().newInstance(initArgs);
+				return clazz.getDeclaredConstructor(getParameterTypes(initArgs))
+					.newInstance(initArgs);
 		}
+	}
+
+	/**
+	 * Get an {@link Class} object array of the given {@link Object} array
+	 *
+	 * @param parameterTypes
+	 *            the parameter types
+	 * @return the {@link Class} object array
+	 */
+	public static Class<?>[] getParameterTypes(Object... parameterTypes)
+	{
+		if (parameterTypes.length == 0)
+		{
+			return new Class<?>[] { };
+		}
+		Class<?>[] parameterTypeClasses = new Class[parameterTypes.length];
+		for (int i = 0; i < parameterTypes.length; i++)
+		{
+			parameterTypeClasses[i] = parameterTypes[i].getClass();
+		}
+		return parameterTypeClasses;
 	}
 }

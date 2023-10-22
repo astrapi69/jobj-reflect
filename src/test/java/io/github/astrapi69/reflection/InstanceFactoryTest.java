@@ -52,6 +52,7 @@ import io.github.astrapi69.collection.pair.KeyValuePair;
 import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.test.object.A;
 import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.enumtype.Gender;
 
 /**
  * The unit test class for the class {@link InstanceFactory}
@@ -187,6 +188,17 @@ class InstanceFactoryTest
 		actual = InstanceFactory.newInstance(fullyQualifiedClassName);
 		assertNotNull(actual);
 		expected = Optional.of(new Person());
+		assertEquals(expected, actual);
+
+		String name = "Foo";
+		String nickname = "man";
+		Gender gender = Gender.MALE;
+		String about = "";
+		Boolean married = false;
+		actual = InstanceFactory.newInstance(fullyQualifiedClassName, about, gender, married, name,
+			nickname);
+		assertNotNull(actual);
+		expected = Optional.of(new Person(about, gender, married, name, nickname));
 		assertEquals(expected, actual);
 
 		fullyQualifiedClassName = "no.qualified.class";
