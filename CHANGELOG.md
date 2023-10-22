@@ -12,6 +12,7 @@ ADDED:
 
 CHANGED:
 
+- update of gradle-plugin dependency 'org.ajoberstar.grgit:grgit-gradle' to new version 5.2.1
 - increase code coverage
 - moved all factory methods from class ReflectionExtensions to new factory class InstanceFactory and tagged them as deprecated
 
