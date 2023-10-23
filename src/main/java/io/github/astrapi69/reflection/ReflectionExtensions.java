@@ -26,7 +26,6 @@ package io.github.astrapi69.reflection;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -34,8 +33,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import io.github.astrapi69.lang.ClassType;
@@ -47,64 +44,9 @@ import lombok.NonNull;
  */
 public final class ReflectionExtensions
 {
-	private static final Logger log = Logger.getLogger(ReflectionExtensions.class.getName());
 
 	private ReflectionExtensions()
 	{
-	}
-
-	/**
-	 * Creates a new array instance from the same type as the given {@link Class} and the given
-	 * length
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param cls
-	 *            the component type class object
-	 * @param length
-	 *            the length of the array
-	 * @return the new array instance
-	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T[] newArrayInstance(final @NonNull Class<T> cls, final int length)
-	{
-		return InstanceFactory.newArrayInstance(cls, length);
-	}
-
-	/**
-	 * Creates a new array instance of the given array {@link Class} and the given length
-	 *
-	 * @param cls
-	 *            the array class object
-	 * @param length
-	 *            the length of the array
-	 * @return the new array instance of the given array {@link Class} and the given length
-	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
-	 */
-	@Deprecated
-	public static Object newArray(final @NonNull Class<?> cls, final int length)
-	{
-		return InstanceFactory.newArray(cls, length);
-	}
-
-	/**
-	 * Creates a new empty array instance from the given source array the length of the given source
-	 * array
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param source
-	 *            the source array
-	 * @return the new empty array instance
-	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T[] newEmptyArrayInstance(final @NonNull T[] source)
-	{
-		return InstanceFactory.newEmptyArrayInstance(source);
 	}
 
 	/**
@@ -119,8 +61,7 @@ public final class ReflectionExtensions
 	@SuppressWarnings("unchecked")
 	public static <T> T[] copyArray(final @NonNull T[] source)
 	{
-		T[] copyOfArray = (T[])copyOfArray(source);
-		return copyOfArray;
+		return (T[])copyOfArray(source);
 	}
 
 	/**
@@ -349,8 +290,6 @@ public final class ReflectionExtensions
 	 * Sets the field value of the given class object over the field name. This method is for set
 	 * static fields from a class
 	 *
-	 * @param <T>
-	 *            the generic type
 	 * @param cls
 	 *            The class
 	 * @param fieldName
@@ -364,8 +303,8 @@ public final class ReflectionExtensions
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method.
 	 */
-	public static <T> void setFieldValue(final @NonNull Class<?> cls,
-		final @NonNull String fieldName, final Object newValue)
+	public static void setFieldValue(final @NonNull Class<?> cls, final @NonNull String fieldName,
+		final Object newValue)
 		throws NoSuchFieldException, SecurityException, IllegalAccessException
 	{
 		final Field sourceField = getDeclaredField(cls, fieldName);
@@ -426,8 +365,7 @@ public final class ReflectionExtensions
 	}
 
 	/**
-	 * Gets all the declared field names from the given class object.
-	 *
+	 * Gets all the declared field names from the given class object <br/>
 	 * Note: without the field names from any superclasses
 	 *
 	 * @param cls
@@ -442,8 +380,7 @@ public final class ReflectionExtensions
 
 	/**
 	 * Gets all the declared field names from the given class object minus the given ignored field
-	 * names
-	 *
+	 * names <br/>
 	 * Note: without the field names from any superclasses
 	 *
 	 * @param cls
@@ -461,8 +398,7 @@ public final class ReflectionExtensions
 
 	/**
 	 * Gets all the declared field names from the given class object minus the given ignored field
-	 * names
-	 *
+	 * names <br/>
 	 * Note: without the field names from any superclasses
 	 *
 	 * @param cls
@@ -569,129 +505,6 @@ public final class ReflectionExtensions
 	}
 
 	/**
-	 * Creates a new instance from the same type as the given object.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param object
-	 *            the object
-	 * @return the new instance
-	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
-	 * @throws NoSuchMethodException
-	 *             is thrown if a matching method is not found
-	 * @throws InvocationTargetException
-	 *             is thrown if the underlying constructor throws an exception
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> Optional<T> newInstance(final @NonNull T object, Object... initArgs)
-		throws InvocationTargetException, InstantiationException, IllegalAccessException,
-		NoSuchMethodException
-	{
-		return InstanceFactory.newGenericInstance(object, initArgs);
-	}
-
-	/**
-	 * Factory method for create a new instance from the same type as the given {@link Class}. First
-	 * try is over the class and second try is with objenesis. <br>
-	 * <br>
-	 * Note: if non of the tries no instance could created null will be returned.
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param clazz
-	 *            the Class object
-	 * @return the new instance
-	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
-	 * @throws NoSuchMethodException
-	 *             is thrown if a matching method is not found
-	 * @throws InvocationTargetException
-	 *             is thrown if the underlying constructor throws an exception
-	 */
-	@Deprecated
-	public static <T> Optional<T> newInstance(final @NonNull Class<T> clazz, Object... initArgs)
-		throws InvocationTargetException, InstantiationException, IllegalAccessException,
-		NoSuchMethodException
-	{
-		return InstanceFactory.newInstance(clazz, initArgs);
-	}
-
-	/**
-	 * Factory method for create a new instance from the given {@link String} object that represents
-	 * the fully qualified name of the class that have to be instantiated. <br>
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param fullyQualifiedClassName
-	 *            The fully qualified name of the class
-	 * @return an {@link Optional} object that contains the new instance or is empty if the attempt
-	 *         to instantiate failed
-	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
-	 * @throws NoSuchMethodException
-	 *             is thrown if a matching method is not found
-	 * @throws InvocationTargetException
-	 *             is thrown if the underlying constructor throws an exception
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> Optional<T> newInstance(final @NonNull String fullyQualifiedClassName,
-		Object... initArgs) throws InvocationTargetException, InstantiationException,
-		IllegalAccessException, NoSuchMethodException
-	{
-		return InstanceFactory.newInstance(fullyQualifiedClassName, initArgs);
-	}
-
-	/**
-	 * Creates a new instance from the same type as the given {@link Class}
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param clazz
-	 *            the Class object
-	 * @param initArgs
-	 *            an optional array of objects to be passed as arguments to the constructor call
-	 *
-	 * @return the new instance
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason
-	 * @throws NoSuchMethodException
-	 *             is thrown if a matching method is not found
-	 * @throws InvocationTargetException
-	 *             is thrown if the underlying constructor throws an exception
-	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T newInstanceWithClass(final @NonNull Class<T> clazz, Object... initArgs)
-		throws InstantiationException, IllegalAccessException, NoSuchMethodException,
-		InvocationTargetException
-	{
-		return InstanceFactory.newInstanceWithClass(clazz, initArgs);
-	}
-
-	/**
 	 * Gets the {@link Field} that match to the given field name that exists in the given object.
 	 *
 	 * @param <T>
@@ -783,7 +596,7 @@ public final class ReflectionExtensions
 			fields.addAll(Arrays.asList(getDeclaredFields(superClass, ignoreFieldNames)));
 			superClass = superClass.getSuperclass();
 		}
-		return fields.toArray(newArrayInstance(Field.class, fields.size()));
+		return fields.toArray(InstanceFactory.newArrayInstance(Field.class, fields.size()));
 	}
 
 	/**
