@@ -38,12 +38,6 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import org.objenesis.instantiator.ObjectInstantiator;
 
 import io.github.astrapi69.lang.ClassExtensions;
 import io.github.astrapi69.lang.ClassType;
@@ -54,8 +48,6 @@ import lombok.NonNull;
  */
 public final class InstanceFactory
 {
-
-	private static final Logger log = Logger.getLogger(InstanceFactory.class.getName());
 
 	/**
 	 * Factory method for create a new instance from the given {@link String} object that represents
@@ -69,10 +61,21 @@ public final class InstanceFactory
 	 *            an optional array of objects to be passed as arguments to the constructor call
 	 * @return an {@link Optional} object that contains the new instance or is empty if the attempt
 	 *         to instantiate failed
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Optional<T> newInstance(final @NonNull String fullyQualifiedClassName,
-		Object... initArgs)
+		Object... initArgs) throws InvocationTargetException, InstantiationException,
+		IllegalAccessException, NoSuchMethodException
 	{
 		try
 		{
@@ -188,9 +191,21 @@ public final class InstanceFactory
 	 * @param initArgs
 	 *            an optional array of objects to be passed as arguments to the constructor call
 	 * @return the new instance
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Optional<T> newGenericInstance(final @NonNull T object, Object... initArgs)
+		throws InvocationTargetException, InstantiationException, IllegalAccessException,
+		NoSuchMethodException
 	{
 		Class<?> clazz = object.getClass();
 		ClassType classType = ClassExtensions.getClassType(clazz);
@@ -241,70 +256,30 @@ public final class InstanceFactory
 	 * @param initArgs
 	 *            an optional array of objects to be passed as arguments to the constructor call
 	 * @return the new instance
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	public static <T> Optional<T> newInstance(final @NonNull Class<T> clazz, Object... initArgs)
+		throws InvocationTargetException, InstantiationException, IllegalAccessException,
+		NoSuchMethodException
 	{
-		Optional<T> newInstance = Optional.empty();
-		Optional<T> optionalNewInstance;
-		optionalNewInstance = forceNewInstanceWithClass(clazz, initArgs);
-		if (optionalNewInstance.isPresent())
-		{
-			return optionalNewInstance;
-		}
-		optionalNewInstance = forceNewInstanceWithObjenesis(clazz);
-		if (optionalNewInstance.isPresent())
-		{
-			return optionalNewInstance;
-		}
+		Optional<T> newInstance = forceNewInstanceWithClass(clazz, initArgs);
 		return newInstance;
 	}
 
-	private static <T> Optional<T> forceNewInstanceWithObjenesis(final @NonNull Class<T> clazz)
-	{
-
-		Optional<T> optionalNewInstance = Optional.empty();
-		try
-		{
-			optionalNewInstance = Optional.of(newInstanceWithObjenesis(clazz));
-		}
-		catch (Exception | Error e)
-		{
-			log.log(Level.INFO,
-				"Failed to create new instance with Objenesis ObjectInstantiator.newInstance()", e);
-		}
-		return optionalNewInstance;
-	}
-
-	/**
-	 * Creates a new instance from the same type as the given {@link Class}
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param clazz
-	 *            the Class object
-	 * @return the new instance
-	 */
-	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
-	{
-		Objenesis objenesis = new ObjenesisStd();
-		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
-		return instantiator.newInstance();
-	}
-
 	private static <T> Optional<T> forceNewInstanceWithClass(final @NonNull Class<T> clazz,
-		Object... initArgs)
+		Object... initArgs) throws InvocationTargetException, InstantiationException,
+		IllegalAccessException, NoSuchMethodException
 	{
-
-		Optional<T> optionalNewInstance = Optional.empty();
-		try
-		{
-			optionalNewInstance = Optional.of(newInstanceWithClass(clazz, initArgs));
-		}
-		catch (Exception | Error e)
-		{
-			log.log(Level.INFO, "Failed to create new instance with method Class.newInstance()", e);
-		}
-		return optionalNewInstance;
+		return Optional.of(newInstanceWithClass(clazz, initArgs));
 	}
 
 	/**
@@ -381,7 +356,7 @@ public final class InstanceFactory
 	 */
 	public static Class<?>[] getParameterTypes(Object... parameterTypes)
 	{
-		if (parameterTypes.length == 0)
+		if (parameterTypes == null || parameterTypes.length == 0)
 		{
 			return new Class<?>[] { };
 		}

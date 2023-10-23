@@ -2,7 +2,6 @@
 dependencies {
     compileOnly("org.projectlombok:lombok:$lombokVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")
-    implementation("org.objenesis:objenesis:$objenesisVersion")
     implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
     testCompileOnly("org.projectlombok:lombok:$lombokVersion")
     testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")

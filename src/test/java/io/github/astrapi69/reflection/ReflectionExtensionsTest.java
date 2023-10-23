@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -735,8 +736,8 @@ public class ReflectionExtensionsTest
 	 *             is thrown if a security manager says no.
 	 */
 	@Test
-	public void testSetFieldValueWithField()
-		throws IllegalAccessException, NoSuchFieldException, SecurityException
+	public void testSetFieldValueWithField() throws IllegalAccessException, NoSuchFieldException,
+		SecurityException, InvocationTargetException, InstantiationException, NoSuchMethodException
 	{
 		String expected;
 		String actual;
@@ -747,7 +748,7 @@ public class ReflectionExtensionsTest
 
 		expected = "Alex";
 		person = Person.builder().name(expected).build();
-		destination = ReflectionExtensions.newInstance(Person.class);
+		destination = InstanceFactory.newInstance(Person.class);
 		assertTrue(destination.isPresent());
 		Person destinationPerson = destination.get();
 		declaredField = ReflectionExtensions.getDeclaredField(destinationPerson, "name");

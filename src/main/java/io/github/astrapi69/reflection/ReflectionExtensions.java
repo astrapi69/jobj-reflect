@@ -577,10 +577,22 @@ public final class ReflectionExtensions
 	 *            the object
 	 * @return the new instance
 	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> Optional<T> newInstance(final @NonNull T object, Object... initArgs)
+		throws InvocationTargetException, InstantiationException, IllegalAccessException,
+		NoSuchMethodException
 	{
 		return InstanceFactory.newGenericInstance(object, initArgs);
 	}
@@ -597,9 +609,21 @@ public final class ReflectionExtensions
 	 *            the Class object
 	 * @return the new instance
 	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Deprecated
 	public static <T> Optional<T> newInstance(final @NonNull Class<T> clazz, Object... initArgs)
+		throws InvocationTargetException, InstantiationException, IllegalAccessException,
+		NoSuchMethodException
 	{
 		return InstanceFactory.newInstance(clazz, initArgs);
 	}
@@ -615,11 +639,22 @@ public final class ReflectionExtensions
 	 * @return an {@link Optional} object that contains the new instance or is empty if the attempt
 	 *         to instantiate failed
 	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> Optional<T> newInstance(final @NonNull String fullyQualifiedClassName,
-		Object... initArgs)
+		Object... initArgs) throws InvocationTargetException, InstantiationException,
+		IllegalAccessException, NoSuchMethodException
 	{
 		return InstanceFactory.newInstance(fullyQualifiedClassName, initArgs);
 	}
@@ -654,22 +689,6 @@ public final class ReflectionExtensions
 		InvocationTargetException
 	{
 		return InstanceFactory.newInstanceWithClass(clazz, initArgs);
-	}
-
-	/**
-	 * Creates a new instance from the same type as the given {@link Class}
-	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param clazz
-	 *            the Class object
-	 * @return the new instance
-	 * @deprecated use instead the same named method from <code>InstanceFactory</code>
-	 */
-	@Deprecated
-	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
-	{
-		return InstanceFactory.newInstanceWithObjenesis(clazz);
 	}
 
 	/**

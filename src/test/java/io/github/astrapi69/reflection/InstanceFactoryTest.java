@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -52,6 +53,7 @@ import io.github.astrapi69.collection.pair.KeyValuePair;
 import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.test.object.A;
 import io.github.astrapi69.test.object.Person;
+import io.github.astrapi69.test.object.PremiumMember;
 import io.github.astrapi69.test.object.enumtype.Gender;
 
 /**
@@ -152,9 +154,9 @@ class InstanceFactoryTest
 	{
 		Integer[] actual;
 		Integer[] expected;
-		Class<Integer[]> integerClass = Integer[].class;
-		expected = InstanceFactory.newArrayInstance(Integer.class, 3);
-		actual = ReflectionExtensions.copyArray(expected);
+
+		actual = InstanceFactory.newArrayInstance(Integer.class, 3);
+		expected = ArrayFactory.newArray(null, null, null, null);
 		assertTrue(Arrays.deepEquals(actual, expected));
 	}
 
@@ -162,15 +164,32 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassOfT()
+	public void testNewInstanceClassOfT() throws InvocationTargetException, InstantiationException,
+		IllegalAccessException, NoSuchMethodException
 	{
 		Optional<Person> expected;
 		Optional<Person> actual;
-
-		final Class<Person> clazz = Person.class;
+		Class<Person> clazz;
+		String name;
+		String nickname;
+		Gender gender;
+		String about;
+		Boolean married;
+		// new scenario ...
+		clazz = Person.class;
 		actual = InstanceFactory.newInstance(clazz);
 		assertNotNull(actual);
 		expected = Optional.of(new Person());
+		assertEquals(expected, actual);
+		// new scenario ...
+		name = "Foo";
+		nickname = "man";
+		gender = Gender.MALE;
+		about = "";
+		married = false;
+		actual = InstanceFactory.newInstance(clazz, about, gender, married, name, nickname);
+		assertNotNull(actual);
+		expected = Optional.of(new Person(about, gender, married, name, nickname));
 		assertEquals(expected, actual);
 	}
 
@@ -178,33 +197,93 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newInstance(String, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassOfString()
+	public void testNewInstanceClassOfStringWithInvalidClassName() throws InvocationTargetException,
+		InstantiationException, IllegalAccessException, NoSuchMethodException
 	{
 		Optional<Person> expected;
 		Optional<Person> actual;
 		String fullyQualifiedClassName;
+		// new scenario ...
+		fullyQualifiedClassName = "no.qualified.class";
+		actual = InstanceFactory.newInstance(fullyQualifiedClassName);
+		assertNotNull(actual);
+		expected = Optional.empty();
+		assertEquals(expected, actual);
+	}
 
+	/**
+	 * Test method for {@link InstanceFactory#newInstance(String, Object...)}
+	 */
+	@Test
+	public void testNewInstanceClassOfStringWithPerson() throws InvocationTargetException,
+		InstantiationException, IllegalAccessException, NoSuchMethodException
+	{
+		Optional<Person> expected;
+		Optional<Person> actual;
+		String fullyQualifiedClassName;
+		String name;
+		String nickname;
+		Gender gender;
+		String about;
+		Boolean married;
+		// new scenario ...
 		fullyQualifiedClassName = "io.github.astrapi69.test.object.Person";
 		actual = InstanceFactory.newInstance(fullyQualifiedClassName);
 		assertNotNull(actual);
 		expected = Optional.of(new Person());
 		assertEquals(expected, actual);
-
-		String name = "Foo";
-		String nickname = "man";
-		Gender gender = Gender.MALE;
-		String about = "";
-		Boolean married = false;
+		// new scenario ...
+		fullyQualifiedClassName = "io.github.astrapi69.test.object.Person";
+		name = "Foo";
+		nickname = "man";
+		gender = Gender.MALE;
+		about = "";
+		married = false;
 		actual = InstanceFactory.newInstance(fullyQualifiedClassName, about, gender, married, name,
 			nickname);
 		assertNotNull(actual);
 		expected = Optional.of(new Person(about, gender, married, name, nickname));
 		assertEquals(expected, actual);
+	}
 
-		fullyQualifiedClassName = "no.qualified.class";
+	/**
+	 * Test method for {@link InstanceFactory#newInstance(String, Object...)}
+	 */
+	@Test
+	public void testNewInstanceClassOfStringWithPremiumMember() throws InvocationTargetException,
+		InstantiationException, IllegalAccessException, NoSuchMethodException
+	{
+		Optional<PremiumMember> expected;
+		Optional<PremiumMember> actual;
+		String fullyQualifiedClassName;
+		String name;
+		String nickname;
+		Gender gender;
+		String about;
+		Boolean married;
+		String credits;
+		Date dateofbirth;
+		Date dateofMarriage;
+		// new scenario ...
+		fullyQualifiedClassName = "io.github.astrapi69.test.object.PremiumMember";
 		actual = InstanceFactory.newInstance(fullyQualifiedClassName);
 		assertNotNull(actual);
-		expected = Optional.empty();
+		expected = Optional.of(new PremiumMember());
+		assertEquals(expected, actual);
+		// new scenario ...
+		name = "Foo";
+		nickname = "man";
+		gender = Gender.MALE;
+		about = "";
+		married = false;
+		dateofbirth = new Date();
+		dateofMarriage = new Date();
+		credits = "";
+		actual = InstanceFactory.newInstance(fullyQualifiedClassName, about, gender, married, name,
+			nickname, dateofbirth, dateofMarriage, credits);
+		assertNotNull(actual);
+		expected = Optional.of(new PremiumMember(about, gender, married, name, nickname,
+			dateofbirth, dateofMarriage, credits));
 		assertEquals(expected, actual);
 	}
 
@@ -325,7 +404,8 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassOfTArray()
+	public void testNewInstanceClassOfTArray() throws InvocationTargetException,
+		InstantiationException, IllegalAccessException, NoSuchMethodException
 	{
 		Optional<int[]> expected;
 		Optional<int[]> actual;
@@ -342,7 +422,8 @@ class InstanceFactoryTest
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNewInstanceT()
+	public void testNewInstanceT() throws InvocationTargetException, InstantiationException,
+		IllegalAccessException, NoSuchMethodException
 	{
 		Optional<?> expected;
 		Optional<?> actual;
@@ -447,26 +528,6 @@ class InstanceFactoryTest
 		setActual = (Set<A>)actual.get();
 		setExpected = SetFactory.newLinkedHashSet();
 		assertEquals(setActual, setExpected);
-	}
-
-	/**
-	 * Test method for {@link InstanceFactory#newInstanceWithObjenesis(Class)}
-	 */
-	@Test
-	public void testNewInstanceWithObjenesis()
-	{
-		Person expected;
-		Person actual;
-		final Class<Person> clazz = Person.class;
-		actual = InstanceFactory.newInstanceWithObjenesis(clazz);
-		assertNotNull(actual);
-		expected = Person.builder().build();
-		expected.setAbout(null);
-		expected.setGender(null);
-		expected.setMarried(null);
-		expected.setName(null);
-		expected.setNickname(null);
-		assertEquals(expected, actual);
 	}
 
 }
