@@ -48,6 +48,9 @@ import lombok.NonNull;
  */
 public final class InstanceFactory
 {
+	private InstanceFactory()
+	{
+	}
 
 	/**
 	 * Factory method for create a new instance from the given {@link String} object that represents
@@ -271,8 +274,7 @@ public final class InstanceFactory
 		throws InvocationTargetException, InstantiationException, IllegalAccessException,
 		NoSuchMethodException
 	{
-		Optional<T> newInstance = forceNewInstanceWithClass(clazz, initArgs);
-		return newInstance;
+		return forceNewInstanceWithClass(clazz, initArgs);
 	}
 
 	private static <T> Optional<T> forceNewInstanceWithClass(final @NonNull Class<T> clazz,

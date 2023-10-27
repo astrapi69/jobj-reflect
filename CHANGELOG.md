@@ -4,6 +4,9 @@
 Version 2.3-SNAPSHOT
 -------------
 
+ADDED:
+
+- new resolver class BeanMethodResolver for resolve method types in java beans
 
 
 Version 2.2

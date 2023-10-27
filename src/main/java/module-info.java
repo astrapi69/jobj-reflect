@@ -21,8 +21,8 @@
 module jobj.reflect.main
 {
 	requires lombok;
-	requires jobj.core.main;
 	requires java.logging;
+	requires jobj.core.main;
 
 	exports io.github.astrapi69.reflection;
 }
