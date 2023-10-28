@@ -76,14 +76,46 @@ public final class InstanceFactory
 	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Optional<T> newInstance(final @NonNull String fullyQualifiedClassName,
+	public static <T> T newInstance(final @NonNull String fullyQualifiedClassName,
+		Object... initArgs) throws InvocationTargetException, InstantiationException,
+		IllegalAccessException, NoSuchMethodException
+	{
+		Optional<T> objectOptional = newOptionalInstance(fullyQualifiedClassName, initArgs);
+		return objectOptional.isPresent() ? objectOptional.get() : null;
+	}
+
+	/**
+	 * Factory method for create a new instance from the given {@link String} object that represents
+	 * the fully qualified name of the class that have to be instantiated. <br>
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param fullyQualifiedClassName
+	 *            The fully qualified name of the class
+	 * @param initArgs
+	 *            an optional array of objects to be passed as arguments to the constructor call
+	 * @return an {@link Optional} object that contains the new instance or is empty if the attempt
+	 *         to instantiate failed
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Optional<T> newOptionalInstance(final @NonNull String fullyQualifiedClassName,
 		Object... initArgs) throws InvocationTargetException, InstantiationException,
 		IllegalAccessException, NoSuchMethodException
 	{
 		try
 		{
 			Class<T> aClass = (Class<T>)ClassExtensions.forName(fullyQualifiedClassName);
-			return newInstance(aClass, initArgs);
+			return newOptionalInstance(aClass, initArgs);
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -242,7 +274,7 @@ public final class InstanceFactory
 				int length = Array.getLength(object);
 				return Optional.of((T)Array.newInstance(clazz.getComponentType(), length));
 			default :
-				return newInstance((Class<T>)object.getClass(), initArgs);
+				return newOptionalInstance((Class<T>)object.getClass(), initArgs);
 		}
 	}
 
@@ -270,9 +302,41 @@ public final class InstanceFactory
 	 * @throws InvocationTargetException
 	 *             is thrown if the underlying constructor throws an exception
 	 */
-	public static <T> Optional<T> newInstance(final @NonNull Class<T> clazz, Object... initArgs)
+	public static <T> T newInstance(final @NonNull Class<T> clazz, Object... initArgs)
 		throws InvocationTargetException, InstantiationException, IllegalAccessException,
 		NoSuchMethodException
+	{
+		Optional<T> objectOptional = newOptionalInstance(clazz, initArgs);
+		return objectOptional.isPresent() ? objectOptional.get() : null;
+	}
+
+	/**
+	 * Factory method for create a new instance from the same type as the given {@link Class}. First
+	 * try is over the class and second try is with objenesis. <br>
+	 * <br>
+	 * Note: if non of the tries no instance could created null will be returned.
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param clazz
+	 *            the Class object
+	 * @param initArgs
+	 *            an optional array of objects to be passed as arguments to the constructor call
+	 * @return the new instance
+	 * @throws InstantiationException
+	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
+	 *             array class, a primitive type, or void; or if the class has no default
+	 *             constructor; or if the instantiation fails for some other reason
+	 * @throws IllegalAccessException
+	 *             is thrown if the class or its default constructor is not accessible
+	 * @throws NoSuchMethodException
+	 *             is thrown if a matching method is not found
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying constructor throws an exception
+	 */
+	public static <T> Optional<T> newOptionalInstance(final @NonNull Class<T> clazz,
+		Object... initArgs) throws InvocationTargetException, InstantiationException,
+		IllegalAccessException, NoSuchMethodException
 	{
 		return forceNewInstanceWithClass(clazz, initArgs);
 	}

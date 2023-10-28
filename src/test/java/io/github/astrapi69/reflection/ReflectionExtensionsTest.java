@@ -47,7 +47,7 @@ import io.github.astrapi69.test.object.Member;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.PremiumMember;
 import io.github.astrapi69.test.object.PrimitiveArrays;
-import io.github.astrapi69.test.object.enumtype.Gender;
+import io.github.astrapi69.test.object.enumeration.Gender;
 
 /**
  * The unit test class for the class {@link ReflectionExtensions}
@@ -748,7 +748,7 @@ public class ReflectionExtensionsTest
 
 		expected = "Alex";
 		person = Person.builder().name(expected).build();
-		destination = InstanceFactory.newInstance(Person.class);
+		destination = InstanceFactory.newOptionalInstance(Person.class);
 		assertTrue(destination.isPresent());
 		Person destinationPerson = destination.get();
 		declaredField = ReflectionExtensions.getDeclaredField(destinationPerson, "name");

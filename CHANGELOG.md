@@ -7,7 +7,12 @@ Version 2.3-SNAPSHOT
 ADDED:
 
 - new resolver class BeanMethodResolver for resolve method types in java beans
+- new factory methods in InstanceFactory that return a new instance
 
+CHANGED:
+
+- update of test dependency test-object to new minor version 8.1
+- rename of factory methods in InstanceFactory that return an optional
 
 Version 2.2
 -------------

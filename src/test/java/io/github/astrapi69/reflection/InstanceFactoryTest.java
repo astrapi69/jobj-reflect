@@ -54,7 +54,7 @@ import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.test.object.A;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.PremiumMember;
-import io.github.astrapi69.test.object.enumtype.Gender;
+import io.github.astrapi69.test.object.enumeration.Gender;
 
 /**
  * The unit test class for the class {@link InstanceFactory}
@@ -161,7 +161,7 @@ class InstanceFactoryTest
 	}
 
 	/**
-	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
+	 * Test method for {@link InstanceFactory#newOptionalInstance(Class, Object...)}
 	 */
 	@Test
 	public void testNewInstanceClassOfT() throws InvocationTargetException, InstantiationException,
@@ -177,7 +177,7 @@ class InstanceFactoryTest
 		Boolean married;
 		// new scenario ...
 		clazz = Person.class;
-		actual = InstanceFactory.newInstance(clazz);
+		actual = InstanceFactory.newOptionalInstance(clazz);
 		assertNotNull(actual);
 		expected = Optional.of(new Person());
 		assertEquals(expected, actual);
@@ -187,14 +187,14 @@ class InstanceFactoryTest
 		gender = Gender.MALE;
 		about = "";
 		married = false;
-		actual = InstanceFactory.newInstance(clazz, about, gender, married, name, nickname);
+		actual = InstanceFactory.newOptionalInstance(clazz, about, gender, married, name, nickname);
 		assertNotNull(actual);
 		expected = Optional.of(new Person(about, gender, married, name, nickname));
 		assertEquals(expected, actual);
 	}
 
 	/**
-	 * Test method for {@link InstanceFactory#newInstance(String, Object...)}
+	 * Test method for {@link InstanceFactory#newOptionalInstance(String, Object...)}
 	 */
 	@Test
 	public void testNewInstanceClassOfStringWithInvalidClassName() throws InvocationTargetException,
@@ -205,7 +205,7 @@ class InstanceFactoryTest
 		String fullyQualifiedClassName;
 		// new scenario ...
 		fullyQualifiedClassName = "no.qualified.class";
-		actual = InstanceFactory.newInstance(fullyQualifiedClassName);
+		actual = InstanceFactory.newOptionalInstance(fullyQualifiedClassName);
 		assertNotNull(actual);
 		expected = Optional.empty();
 		assertEquals(expected, actual);
@@ -215,11 +215,11 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newInstance(String, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassOfStringWithPerson() throws InvocationTargetException,
+	public void testNewInstanceClassNameOfStringWithPerson() throws InvocationTargetException,
 		InstantiationException, IllegalAccessException, NoSuchMethodException
 	{
-		Optional<Person> expected;
-		Optional<Person> actual;
+		Person expected;
+		Person actual;
 		String fullyQualifiedClassName;
 		String name;
 		String nickname;
@@ -230,7 +230,7 @@ class InstanceFactoryTest
 		fullyQualifiedClassName = "io.github.astrapi69.test.object.Person";
 		actual = InstanceFactory.newInstance(fullyQualifiedClassName);
 		assertNotNull(actual);
-		expected = Optional.of(new Person());
+		expected = new Person();
 		assertEquals(expected, actual);
 		// new scenario ...
 		fullyQualifiedClassName = "io.github.astrapi69.test.object.Person";
@@ -242,7 +242,38 @@ class InstanceFactoryTest
 		actual = InstanceFactory.newInstance(fullyQualifiedClassName, about, gender, married, name,
 			nickname);
 		assertNotNull(actual);
-		expected = Optional.of(new Person(about, gender, married, name, nickname));
+		expected = new Person(about, gender, married, name, nickname);
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
+	 */
+	@Test
+	public void testNewInstanceClassOfStringWithPerson() throws InvocationTargetException,
+		InstantiationException, IllegalAccessException, NoSuchMethodException
+	{
+		Person expected;
+		Person actual;
+		String name;
+		String nickname;
+		Gender gender;
+		String about;
+		Boolean married;
+		// new scenario ...
+		actual = InstanceFactory.newInstance(Person.class);
+		assertNotNull(actual);
+		expected = new Person();
+		assertEquals(expected, actual);
+		// new scenario ...
+		name = "Foo";
+		nickname = "man";
+		gender = Gender.MALE;
+		about = "";
+		married = false;
+		actual = InstanceFactory.newInstance(Person.class, about, gender, married, name, nickname);
+		assertNotNull(actual);
+		expected = new Person(about, gender, married, name, nickname);
 		assertEquals(expected, actual);
 	}
 
@@ -253,8 +284,8 @@ class InstanceFactoryTest
 	public void testNewInstanceClassOfStringWithPremiumMember() throws InvocationTargetException,
 		InstantiationException, IllegalAccessException, NoSuchMethodException
 	{
-		Optional<PremiumMember> expected;
-		Optional<PremiumMember> actual;
+		PremiumMember expected;
+		PremiumMember actual;
 		String fullyQualifiedClassName;
 		String name;
 		String nickname;
@@ -268,7 +299,7 @@ class InstanceFactoryTest
 		fullyQualifiedClassName = "io.github.astrapi69.test.object.PremiumMember";
 		actual = InstanceFactory.newInstance(fullyQualifiedClassName);
 		assertNotNull(actual);
-		expected = Optional.of(new PremiumMember());
+		expected = new PremiumMember();
 		assertEquals(expected, actual);
 		// new scenario ...
 		name = "Foo";
@@ -282,13 +313,13 @@ class InstanceFactoryTest
 		actual = InstanceFactory.newInstance(fullyQualifiedClassName, about, gender, married, name,
 			nickname, dateofbirth, dateofMarriage, credits);
 		assertNotNull(actual);
-		expected = Optional.of(new PremiumMember(about, gender, married, name, nickname,
-			dateofbirth, dateofMarriage, credits));
+		expected = new PremiumMember(about, gender, married, name, nickname, dateofbirth,
+			dateofMarriage, credits);
 		assertEquals(expected, actual);
 	}
 
 	/**
-	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
+	 * Test method for {@link InstanceFactory#newInstanceWithClass(Class, Object...)}
 	 *
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible.
@@ -316,7 +347,7 @@ class InstanceFactoryTest
 	}
 
 	/**
-	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
+	 * Test method for {@link InstanceFactory#newInstanceWithClass(Class, Object...)}
 	 *
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible.
@@ -345,7 +376,7 @@ class InstanceFactoryTest
 
 
 	/**
-	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
+	 * Test method for {@link InstanceFactory#newInstanceWithClass(Class, Object...)}
 	 *
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible.
@@ -373,7 +404,7 @@ class InstanceFactoryTest
 	}
 
 	/**
-	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
+	 * Test method for {@link InstanceFactory#newInstanceWithClass(Class, Object...)}
 	 *
 	 * @throws IllegalAccessException
 	 *             is thrown if the class or its default constructor is not accessible.
@@ -401,17 +432,17 @@ class InstanceFactoryTest
 	}
 
 	/**
-	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
+	 * Test method for {@link InstanceFactory#newOptionalInstance(Class, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassOfTArray() throws InvocationTargetException,
+	public void testNewOptionalInstanceClassOfTArray() throws InvocationTargetException,
 		InstantiationException, IllegalAccessException, NoSuchMethodException
 	{
 		Optional<int[]> expected;
 		Optional<int[]> actual;
 
 		final Class<int[]> intArrayClass = int[].class;
-		actual = InstanceFactory.newInstance(intArrayClass);
+		actual = InstanceFactory.newOptionalInstance(intArrayClass);
 		assertNotNull(actual);
 		expected = Optional.of(ArrayFactory.newIntArray(0, 0, 0));
 		assertArrayEquals(actual.get(), expected.get());
@@ -422,7 +453,7 @@ class InstanceFactoryTest
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNewInstanceT() throws InvocationTargetException, InstantiationException,
+	public void testNewGenericInstanceT() throws InvocationTargetException, InstantiationException,
 		IllegalAccessException, NoSuchMethodException
 	{
 		Optional<?> expected;
