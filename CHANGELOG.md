@@ -4,7 +4,9 @@
 Version 2.4-SNAPSHOT
 -------------
 
+ADDED:
 
+- new test dependency objenesis in version 3.3
 
 Version 2.3
 -------------

@@ -5,6 +5,7 @@ dependencies {
     implementation("io.github.astrapi69:jobj-core:$jobjCoreVersion")
     testCompileOnly("org.projectlombok:lombok:$lombokVersion")
     testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    testImplementation("org.objenesis:objenesis:$objenesisVersion")
     testImplementation("io.github.astrapi69:silly-collection:$sillyCollectionVersion")
     testImplementation("io.github.astrapi69:silly-bean:$sillyBeanVersion")
     testImplementation("io.github.astrapi69:test-object:$testObjectVersion")

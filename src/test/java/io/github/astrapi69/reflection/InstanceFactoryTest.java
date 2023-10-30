@@ -43,6 +43,9 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
+import io.github.astrapi69.test.object.PrimitiveObjectClassArrays;
+import io.github.astrapi69.test.object.factory.TestObjectFactory;
+import lombok.NonNull;
 import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
 
@@ -55,6 +58,9 @@ import io.github.astrapi69.test.object.A;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.PremiumMember;
 import io.github.astrapi69.test.object.enumeration.Gender;
+import org.objenesis.Objenesis;
+import org.objenesis.ObjenesisStd;
+import org.objenesis.instantiator.ObjectInstantiator;
 
 /**
  * The unit test class for the class {@link InstanceFactory}
@@ -191,6 +197,36 @@ class InstanceFactoryTest
 		assertNotNull(actual);
 		expected = Optional.of(new Person(about, gender, married, name, nickname));
 		assertEquals(expected, actual);
+
+		PrimitiveObjectClassArrays instance = newInstanceWithObjenesis(PrimitiveObjectClassArrays.class);
+
+
+		Map<String, Object> allTestObjectsInMap = TestObjectFactory.getAllTestObjectsInMap();
+		allTestObjectsInMap.entrySet().stream().forEach(stringObjectEntry -> {
+			Object object = stringObjectEntry.getValue();
+			Class<?> aClass = object.getClass();
+			try {
+				Optional<?> optional = InstanceFactory.newOptionalInstance(aClass);
+				assertNotNull(optional.get());
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException(e);
+			} catch (InstantiationException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			} catch (NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
+
+		});
+	}
+
+
+	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
+	{
+		Objenesis objenesis = new ObjenesisStd();
+		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
+		return instantiator.newInstance();
 	}
 
 	/**
