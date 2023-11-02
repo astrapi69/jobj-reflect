@@ -197,38 +197,13 @@ class InstanceFactoryTest
 		expected = Optional.of(new Person(about, gender, married, name, nickname));
 		assertEquals(expected, actual);
 
-		// TODO uncomment when new version of test-object will be published
-		// PrimitiveObjectClassArrays instance = newInstanceWithObjenesis(
-		// PrimitiveObjectClassArrays.class);
-		//
-		//
-		// Map<String, Object> allTestObjectsInMap = TestObjectFactory.getAllTestObjectsInMap();
-		// allTestObjectsInMap.entrySet().stream().forEach(stringObjectEntry -> {
-		// Object object = stringObjectEntry.getValue();
-		// Class<?> aClass = object.getClass();
-		// try
-		// {
-		// Optional<?> optional = InstanceFactory.newOptionalInstance(aClass);
-		// assertNotNull(optional.get());
-		// }
-		// catch (InvocationTargetException e)
-		// {
-		// throw new RuntimeException(e);
-		// }
-		// catch (InstantiationException e)
-		// {
-		// throw new RuntimeException(e);
-		// }
-		// catch (IllegalAccessException e)
-		// {
-		// throw new RuntimeException(e);
-		// }
-		// catch (NoSuchMethodException e)
-		// {
-		// throw new RuntimeException(e);
-		// }
-		//
-		// });
+		 Map<String, Object> allTestObjectsInMap = TestObjectFactory.getAllTestObjectsInMap();
+		 allTestObjectsInMap.entrySet().stream().forEach(stringObjectEntry -> {
+		 Object object = stringObjectEntry.getValue();
+		 Class<?> aClass = object.getClass();
+		 Optional<?> optional = InstanceFactory.newOptionalInstance(aClass);
+		 assertNotNull(optional.get());
+		 });
 	}
 
 	/**

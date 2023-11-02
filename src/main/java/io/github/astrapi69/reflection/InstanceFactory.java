@@ -340,8 +340,8 @@ public final class InstanceFactory
 	public static <T> T newInstanceWithModjenesis(final @NonNull Class<T> clazz, Object... initArgs)
 	{
 		Objenesis objenesis = new ObjenesisStd();
-		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
-		return instantiator.newInstance();
+		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz, initArgs);
+		return instantiator.newInstance(initArgs);
 	}
 
 	/**

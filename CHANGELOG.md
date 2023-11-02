@@ -10,6 +10,10 @@ ADDED:
 - new method that create new instance with modjenesis
 - new required version info for dependency 'org.junit.platform:junit-platform-launcher' in current version 1.10.0
 
+CHANGED:
+
+- update of test dependency test-object to new minor version 8.2
+
 Version 2.3
 -------------
 
