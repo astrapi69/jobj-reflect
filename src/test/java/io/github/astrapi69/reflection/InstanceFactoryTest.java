@@ -43,9 +43,6 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
-import io.github.astrapi69.test.object.PrimitiveObjectClassArrays;
-import io.github.astrapi69.test.object.factory.TestObjectFactory;
-import lombok.NonNull;
 import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
 
@@ -54,19 +51,29 @@ import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.pair.KeyValuePair;
 import io.github.astrapi69.collection.set.SetFactory;
+import io.github.astrapi69.modjenesis.Objenesis;
+import io.github.astrapi69.modjenesis.ObjenesisStd;
+import io.github.astrapi69.modjenesis.instantiator.ObjectInstantiator;
 import io.github.astrapi69.test.object.A;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.PremiumMember;
+import io.github.astrapi69.test.object.PrimitiveObjectClassArrays;
 import io.github.astrapi69.test.object.enumeration.Gender;
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import org.objenesis.instantiator.ObjectInstantiator;
+import io.github.astrapi69.test.object.factory.TestObjectFactory;
+import lombok.NonNull;
 
 /**
  * The unit test class for the class {@link InstanceFactory}
  */
 class InstanceFactoryTest
 {
+
+	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
+	{
+		Objenesis objenesis = new ObjenesisStd();
+		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
+		return instantiator.newInstance();
+	}
 
 	/**
 	 * Test method for {@link InstanceFactory}
@@ -198,35 +205,37 @@ class InstanceFactoryTest
 		expected = Optional.of(new Person(about, gender, married, name, nickname));
 		assertEquals(expected, actual);
 
-		PrimitiveObjectClassArrays instance = newInstanceWithObjenesis(PrimitiveObjectClassArrays.class);
+		PrimitiveObjectClassArrays instance = newInstanceWithObjenesis(
+			PrimitiveObjectClassArrays.class);
 
 
 		Map<String, Object> allTestObjectsInMap = TestObjectFactory.getAllTestObjectsInMap();
 		allTestObjectsInMap.entrySet().stream().forEach(stringObjectEntry -> {
 			Object object = stringObjectEntry.getValue();
 			Class<?> aClass = object.getClass();
-			try {
+			try
+			{
 				Optional<?> optional = InstanceFactory.newOptionalInstance(aClass);
 				assertNotNull(optional.get());
-			} catch (InvocationTargetException e) {
+			}
+			catch (InvocationTargetException e)
+			{
 				throw new RuntimeException(e);
-			} catch (InstantiationException e) {
+			}
+			catch (InstantiationException e)
+			{
 				throw new RuntimeException(e);
-			} catch (IllegalAccessException e) {
+			}
+			catch (IllegalAccessException e)
+			{
 				throw new RuntimeException(e);
-			} catch (NoSuchMethodException e) {
+			}
+			catch (NoSuchMethodException e)
+			{
 				throw new RuntimeException(e);
 			}
 
 		});
-	}
-
-
-	public static <T> T newInstanceWithObjenesis(final @NonNull Class<T> clazz)
-	{
-		Objenesis objenesis = new ObjenesisStd();
-		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
-		return instantiator.newInstance();
 	}
 
 	/**
@@ -485,7 +494,7 @@ class InstanceFactoryTest
 	}
 
 	/**
-	 * Test method for {@link InstanceFactory#newGenericInstance(Object, Object...)}
+	 * Test method for {@link InstanceFactory#newGenericOptionalInstance(Object, Object...)}
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -507,7 +516,7 @@ class InstanceFactoryTest
 		Set<A> setExpected;
 
 		a = new A();
-		actual = InstanceFactory.newGenericInstance(a);
+		actual = InstanceFactory.newGenericOptionalInstance(a);
 		assertNotNull(actual);
 		expected = Optional.of(new A());
 		assertEquals(expected, actual);
@@ -515,7 +524,7 @@ class InstanceFactoryTest
 		assertEquals(expected, actual);
 		// new scenario with object array...
 		Integer[] integerArray = ArrayFactory.newArray(1, 2, 3);
-		actual = InstanceFactory.newGenericInstance(integerArray);
+		actual = InstanceFactory.newGenericOptionalInstance(integerArray);
 		assertNotNull(actual);
 		assertTrue(actual.isPresent());
 		assertTrue(actual.get() instanceof Integer[]);
@@ -524,7 +533,7 @@ class InstanceFactoryTest
 		assertTrue(Arrays.deepEquals(integerArrayActual, integerArrayExpected));
 		// new scenario with a primitive array...
 		int[] intArray = ArrayFactory.newIntArray(1, 2, 3);
-		actual = InstanceFactory.newGenericInstance(intArray);
+		actual = InstanceFactory.newGenericOptionalInstance(intArray);
 		assertNotNull(actual);
 		assertTrue(actual.isPresent());
 		assertTrue(actual.get() instanceof int[]);
@@ -534,7 +543,7 @@ class InstanceFactoryTest
 		// new scenario with hashmap ...
 		firstEntry = KeyValuePair.<String, Integer> builder().key("foo").value(1).build();
 		map = MapFactory.newHashMap(ListFactory.newArrayList(firstEntry));
-		actual = InstanceFactory.newGenericInstance(map);
+		actual = InstanceFactory.newGenericOptionalInstance(map);
 		assertNotNull(actual);
 		assertTrue(actual.isPresent());
 		assertTrue(actual.get() instanceof Map);
@@ -543,7 +552,7 @@ class InstanceFactoryTest
 		assertEquals(mapActual, mapExpected);
 		// new scenario with linked hashmap ...
 		map = MapFactory.newLinkedHashMap(ListFactory.newArrayList(firstEntry));
-		actual = InstanceFactory.newGenericInstance(map);
+		actual = InstanceFactory.newGenericOptionalInstance(map);
 		assertNotNull(actual);
 		assertTrue(actual.isPresent());
 		assertTrue(actual.get() instanceof Map);
@@ -552,7 +561,7 @@ class InstanceFactoryTest
 		assertEquals(mapActual, mapExpected);
 		// new scenario with tree hashmap ...
 		map = MapFactory.newTreeMap(ListFactory.newArrayList(firstEntry));
-		actual = InstanceFactory.newGenericInstance(map);
+		actual = InstanceFactory.newGenericOptionalInstance(map);
 		assertNotNull(actual);
 		assertTrue(actual.isPresent());
 		assertTrue(actual.get() instanceof Map);
@@ -561,7 +570,7 @@ class InstanceFactoryTest
 		assertEquals(mapActual, mapExpected);
 		// new scenario with array List ...
 		list = ListFactory.newArrayList(a);
-		actual = InstanceFactory.newGenericInstance(list);
+		actual = InstanceFactory.newGenericOptionalInstance(list);
 		assertNotNull(actual);
 		assertTrue(actual.isPresent());
 		assertTrue(actual.get() instanceof List);
@@ -570,7 +579,7 @@ class InstanceFactoryTest
 		assertEquals(listActual, listExpected);
 		// new scenario with linked List ...
 		list = ListFactory.newLinkedList(a);
-		actual = InstanceFactory.newGenericInstance(list);
+		actual = InstanceFactory.newGenericOptionalInstance(list);
 		assertNotNull(actual);
 		assertTrue(actual.isPresent());
 		assertTrue(actual.get() instanceof List);
@@ -579,7 +588,7 @@ class InstanceFactoryTest
 		assertEquals(listActual, listExpected);
 		// new scenario with HashSet ...
 		set = SetFactory.newHashSet(a);
-		actual = InstanceFactory.newGenericInstance(set);
+		actual = InstanceFactory.newGenericOptionalInstance(set);
 		assertNotNull(actual);
 		assertTrue(actual.isPresent());
 		assertTrue(actual.get() instanceof Set);
@@ -588,7 +597,7 @@ class InstanceFactoryTest
 		assertEquals(setActual, setExpected);
 		// new scenario with linked HashSet ...
 		set = SetFactory.newLinkedHashSet(a);
-		actual = InstanceFactory.newGenericInstance(set);
+		actual = InstanceFactory.newGenericOptionalInstance(set);
 		assertNotNull(actual);
 		assertTrue(actual.isPresent());
 		assertTrue(actual.get() instanceof Set);

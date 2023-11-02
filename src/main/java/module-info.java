@@ -23,6 +23,7 @@ module jobj.reflect.main
 	requires lombok;
 	requires java.logging;
 	requires jobj.core.main;
+	requires modjenesis.main;
 
 	exports io.github.astrapi69.reflection;
 }

@@ -38,9 +38,14 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import io.github.astrapi69.lang.ClassExtensions;
 import io.github.astrapi69.lang.ClassType;
+import io.github.astrapi69.modjenesis.Objenesis;
+import io.github.astrapi69.modjenesis.ObjenesisStd;
+import io.github.astrapi69.modjenesis.instantiator.ObjectInstantiator;
 import lombok.NonNull;
 
 /**
@@ -48,6 +53,8 @@ import lombok.NonNull;
  */
 public final class InstanceFactory
 {
+	private static final Logger log = Logger.getLogger(InstanceFactory.class.getName());
+
 	private InstanceFactory()
 	{
 	}
@@ -119,6 +126,8 @@ public final class InstanceFactory
 		}
 		catch (ClassNotFoundException e)
 		{
+			log.log(Level.FINE, "Failed to create new instance with ClassExtensions.forName("
+				+ fullyQualifiedClassName + ")", e);
 			return Optional.empty();
 		}
 	}
@@ -238,9 +247,9 @@ public final class InstanceFactory
 	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Optional<T> newGenericInstance(final @NonNull T object, Object... initArgs)
-		throws InvocationTargetException, InstantiationException, IllegalAccessException,
-		NoSuchMethodException
+	public static <T> Optional<T> newGenericOptionalInstance(final @NonNull T object,
+		Object... initArgs) throws InvocationTargetException, InstantiationException,
+		IllegalAccessException, NoSuchMethodException
 	{
 		Class<?> clazz = object.getClass();
 		ClassType classType = ClassExtensions.getClassType(clazz);
@@ -307,6 +316,11 @@ public final class InstanceFactory
 		NoSuchMethodException
 	{
 		Optional<T> objectOptional = newOptionalInstance(clazz, initArgs);
+		if (objectOptional.isPresent())
+		{
+			return objectOptional.get();
+		}
+		objectOptional = forceNewOptionalInstanceWithModjenesis(clazz);
 		return objectOptional.isPresent() ? objectOptional.get() : null;
 	}
 
@@ -338,14 +352,52 @@ public final class InstanceFactory
 		Object... initArgs) throws InvocationTargetException, InstantiationException,
 		IllegalAccessException, NoSuchMethodException
 	{
-		return forceNewInstanceWithClass(clazz, initArgs);
+		Optional<T> objectOptional = forceNewOptionalInstanceWithClass(clazz, initArgs);
+		if (objectOptional.isPresent())
+		{
+			return objectOptional;
+		}
+		return forceNewOptionalInstanceWithModjenesis(clazz, initArgs);
 	}
 
-	private static <T> Optional<T> forceNewInstanceWithClass(final @NonNull Class<T> clazz,
-		Object... initArgs) throws InvocationTargetException, InstantiationException,
-		IllegalAccessException, NoSuchMethodException
+	private static <T> Optional<T> forceNewOptionalInstanceWithClass(final @NonNull Class<T> clazz,
+		Object... initArgs)
 	{
-		return Optional.of(newInstanceWithClass(clazz, initArgs));
+		Optional<T> objectOptional = Optional.empty();
+		try
+		{
+			objectOptional = Optional.of(newInstanceWithClass(clazz, initArgs));
+		}
+		catch (Exception e)
+		{
+			log.log(Level.INFO, "Failed to create new instance with newInstanceWithClass("
+				+ ClassExtensions.getName(clazz) + ", initArgs)", e);
+		}
+		return objectOptional;
+	}
+
+	private static <T> Optional<T> forceNewOptionalInstanceWithModjenesis(
+		final @NonNull Class<T> clazz, Object... initArgs)
+	{
+		return Optional.of(newInstanceWithModjenesis(clazz, initArgs));
+	}
+
+	/**
+	 * Creates a new instance from the same type as the given {@link Class}
+	 *
+	 * @param <T>
+	 *            the generic type
+	 * @param clazz
+	 *            the Class object
+	 * @param initArgs
+	 *            an optional array of objects to be passed as arguments to the constructor call
+	 * @return the new instance
+	 */
+	public static <T> T newInstanceWithModjenesis(final @NonNull Class<T> clazz, Object... initArgs)
+	{
+		Objenesis objenesis = new ObjenesisStd();
+		ObjectInstantiator<T> instantiator = objenesis.getInstantiatorOf(clazz);
+		return instantiator.newInstance();
 	}
 
 	/**
