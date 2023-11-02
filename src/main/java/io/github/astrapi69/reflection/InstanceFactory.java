@@ -71,21 +71,10 @@ public final class InstanceFactory
 	 *            an optional array of objects to be passed as arguments to the constructor call
 	 * @return an {@link Optional} object that contains the new instance or is empty if the attempt
 	 *         to instantiate failed
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
-	 * @throws NoSuchMethodException
-	 *             is thrown if a matching method is not found
-	 * @throws InvocationTargetException
-	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T newInstance(final @NonNull String fullyQualifiedClassName,
-		Object... initArgs) throws InvocationTargetException, InstantiationException,
-		IllegalAccessException, NoSuchMethodException
+		Object... initArgs)
 	{
 		Optional<T> objectOptional = newOptionalInstance(fullyQualifiedClassName, initArgs);
 		return objectOptional.isPresent() ? objectOptional.get() : null;
@@ -103,21 +92,10 @@ public final class InstanceFactory
 	 *            an optional array of objects to be passed as arguments to the constructor call
 	 * @return an {@link Optional} object that contains the new instance or is empty if the attempt
 	 *         to instantiate failed
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
-	 * @throws NoSuchMethodException
-	 *             is thrown if a matching method is not found
-	 * @throws InvocationTargetException
-	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Optional<T> newOptionalInstance(final @NonNull String fullyQualifiedClassName,
-		Object... initArgs) throws InvocationTargetException, InstantiationException,
-		IllegalAccessException, NoSuchMethodException
+		Object... initArgs)
 	{
 		try
 		{
@@ -235,21 +213,10 @@ public final class InstanceFactory
 	 * @param initArgs
 	 *            an optional array of objects to be passed as arguments to the constructor call
 	 * @return the new instance
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
-	 * @throws NoSuchMethodException
-	 *             is thrown if a matching method is not found
-	 * @throws InvocationTargetException
-	 *             is thrown if the underlying constructor throws an exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Optional<T> newGenericOptionalInstance(final @NonNull T object,
-		Object... initArgs) throws InvocationTargetException, InstantiationException,
-		IllegalAccessException, NoSuchMethodException
+		Object... initArgs)
 	{
 		Class<?> clazz = object.getClass();
 		ClassType classType = ClassExtensions.getClassType(clazz);
@@ -300,20 +267,8 @@ public final class InstanceFactory
 	 * @param initArgs
 	 *            an optional array of objects to be passed as arguments to the constructor call
 	 * @return the new instance
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
-	 * @throws NoSuchMethodException
-	 *             is thrown if a matching method is not found
-	 * @throws InvocationTargetException
-	 *             is thrown if the underlying constructor throws an exception
 	 */
 	public static <T> T newInstance(final @NonNull Class<T> clazz, Object... initArgs)
-		throws InvocationTargetException, InstantiationException, IllegalAccessException,
-		NoSuchMethodException
 	{
 		Optional<T> objectOptional = newOptionalInstance(clazz, initArgs);
 		if (objectOptional.isPresent())
@@ -337,20 +292,9 @@ public final class InstanceFactory
 	 * @param initArgs
 	 *            an optional array of objects to be passed as arguments to the constructor call
 	 * @return the new instance
-	 * @throws InstantiationException
-	 *             is thrown if this {@code Class} represents an abstract class, an interface, an
-	 *             array class, a primitive type, or void; or if the class has no default
-	 *             constructor; or if the instantiation fails for some other reason
-	 * @throws IllegalAccessException
-	 *             is thrown if the class or its default constructor is not accessible
-	 * @throws NoSuchMethodException
-	 *             is thrown if a matching method is not found
-	 * @throws InvocationTargetException
-	 *             is thrown if the underlying constructor throws an exception
 	 */
 	public static <T> Optional<T> newOptionalInstance(final @NonNull Class<T> clazz,
-		Object... initArgs) throws InvocationTargetException, InstantiationException,
-		IllegalAccessException, NoSuchMethodException
+		Object... initArgs)
 	{
 		Optional<T> objectOptional = forceNewOptionalInstanceWithClass(clazz, initArgs);
 		if (objectOptional.isPresent())

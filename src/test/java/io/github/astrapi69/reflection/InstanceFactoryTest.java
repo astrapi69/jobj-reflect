@@ -170,8 +170,7 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newOptionalInstance(Class, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassOfT() throws InvocationTargetException, InstantiationException,
-		IllegalAccessException, NoSuchMethodException
+	public void testNewInstanceClassOfT()
 	{
 		Optional<Person> expected;
 		Optional<Person> actual;
@@ -236,8 +235,7 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newOptionalInstance(String, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassOfStringWithInvalidClassName() throws InvocationTargetException,
-		InstantiationException, IllegalAccessException, NoSuchMethodException
+	public void testNewInstanceClassOfStringWithInvalidClassName()
 	{
 		Optional<Person> expected;
 		Optional<Person> actual;
@@ -254,8 +252,7 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newInstance(String, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassNameOfStringWithPerson() throws InvocationTargetException,
-		InstantiationException, IllegalAccessException, NoSuchMethodException
+	public void testNewInstanceClassNameOfStringWithPerson()
 	{
 		Person expected;
 		Person actual;
@@ -289,8 +286,7 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newInstance(Class, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassOfStringWithPerson() throws InvocationTargetException,
-		InstantiationException, IllegalAccessException, NoSuchMethodException
+	public void testNewInstanceClassOfStringWithPerson()
 	{
 		Person expected;
 		Person actual;
@@ -320,8 +316,7 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newInstance(String, Object...)}
 	 */
 	@Test
-	public void testNewInstanceClassOfStringWithPremiumMember() throws InvocationTargetException,
-		InstantiationException, IllegalAccessException, NoSuchMethodException
+	public void testNewInstanceClassOfStringWithPremiumMember()
 	{
 		PremiumMember expected;
 		PremiumMember actual;
@@ -474,8 +469,7 @@ class InstanceFactoryTest
 	 * Test method for {@link InstanceFactory#newOptionalInstance(Class, Object...)}
 	 */
 	@Test
-	public void testNewOptionalInstanceClassOfTArray() throws InvocationTargetException,
-		InstantiationException, IllegalAccessException, NoSuchMethodException
+	public void testNewOptionalInstanceClassOfTArray()
 	{
 		Optional<int[]> expected;
 		Optional<int[]> actual;
@@ -492,8 +486,7 @@ class InstanceFactoryTest
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNewGenericInstanceT() throws InvocationTargetException, InstantiationException,
-		IllegalAccessException, NoSuchMethodException
+	public void testNewGenericInstanceT()
 	{
 		Optional<?> expected;
 		Optional<?> actual;
