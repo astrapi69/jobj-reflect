@@ -12,6 +12,7 @@ ADDED:
 
 CHANGED:
 
+- update of dependency modjenesis to new minor version 1.1
 - update of test dependency test-object to new minor version 8.2
 
 Version 2.3
