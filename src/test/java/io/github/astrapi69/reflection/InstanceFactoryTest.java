@@ -51,16 +51,11 @@ import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.pair.KeyValuePair;
 import io.github.astrapi69.collection.set.SetFactory;
-import io.github.astrapi69.modjenesis.Objenesis;
-import io.github.astrapi69.modjenesis.ObjenesisStd;
-import io.github.astrapi69.modjenesis.instantiator.ObjectInstantiator;
 import io.github.astrapi69.test.object.A;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.PremiumMember;
-import io.github.astrapi69.test.object.PrimitiveObjectClassArrays;
 import io.github.astrapi69.test.object.enumeration.Gender;
 import io.github.astrapi69.test.object.factory.TestObjectFactory;
-import lombok.NonNull;
 
 /**
  * The unit test class for the class {@link InstanceFactory}
@@ -197,13 +192,14 @@ class InstanceFactoryTest
 		expected = Optional.of(new Person(about, gender, married, name, nickname));
 		assertEquals(expected, actual);
 
-		 Map<String, Object> allTestObjectsInMap = TestObjectFactory.getAllTestObjectsInMap();
-		 allTestObjectsInMap.entrySet().stream().forEach(stringObjectEntry -> {
-		 Object object = stringObjectEntry.getValue();
-		 Class<?> aClass = object.getClass();
-		 Optional<?> optional = InstanceFactory.newOptionalInstance(aClass);
-		 assertNotNull(optional.get());
-		 });
+		Map<String, Object> allTestObjectsInMap = TestObjectFactory.getAllTestObjectsInMap();
+		allTestObjectsInMap.entrySet().stream().forEach(stringObjectEntry -> {
+			Object object = stringObjectEntry.getValue();
+			Class<?> aClass = object.getClass();
+			Optional<?> optional = InstanceFactory.newOptionalInstance(aClass);
+			assertNotNull(optional);
+			assertTrue(optional.isPresent());
+		});
 	}
 
 	/**
