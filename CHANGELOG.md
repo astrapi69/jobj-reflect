@@ -6,13 +6,12 @@ Version 2.4-SNAPSHOT
 
 ADDED:
 
-- new dependency modjenesis in major version 1
+- new dependency modjenesis in minor version 1.2
 - new method that create new instance with modjenesis
 - new required version info for dependency 'org.junit.platform:junit-platform-launcher' in current version 1.10.0
 
 CHANGED:
 
-- update of dependency modjenesis to new minor version 1.1
 - update of test dependency test-object to new minor version 8.2
 
 Version 2.3
