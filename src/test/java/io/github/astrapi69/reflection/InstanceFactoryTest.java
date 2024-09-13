@@ -43,6 +43,7 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
+import io.github.astrapi69.lang.ClassExtensions;
 import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
 
@@ -216,6 +217,14 @@ class InstanceFactoryTest
 		actual = InstanceFactory.newOptionalInstance(fullyQualifiedClassName);
 		assertNotNull(actual);
 		expected = Optional.empty();
+		assertEquals(expected, actual);
+		// new scenario ...
+		String classCanonicalName = ClassExtensions.getClassCanonicalName(Person.class);
+		fullyQualifiedClassName = classCanonicalName;
+		actual = InstanceFactory.newOptionalInstance(fullyQualifiedClassName);
+		assertNotNull(actual);
+		expected = Optional.of(Person.builder()
+				.build());
 		assertEquals(expected, actual);
 	}
 

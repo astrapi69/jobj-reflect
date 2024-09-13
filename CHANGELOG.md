@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 2.5-SNAPSHOT
+Version 3-SNAPSHOT
 -------------
 
 ADDED:
@@ -10,6 +10,7 @@ ADDED:
 
 CHANGED:
 
+- rename of module to new name 'io.github.astrapisixtynine.jobj.reflect'
 - update gradle to new version 8.8
 - update of dependency lombok to new version 1.18.32
 - update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor version 7.0.0.BETA1
