@@ -17,7 +17,7 @@ CHANGED:
 - update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor version 7.0.0.BETA2
 - update of dependency jobj-core to new major version 9
 - update of test dependency test-object to new major version 9
-- update of test dependency silly-collection~~~~ to new major version 9
+- update of test dependency silly-collection to new major version 9
 - update of test dependency junit-jupiter to new version 5.11.0
 
 Version 2.4
