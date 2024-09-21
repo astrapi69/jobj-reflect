@@ -7,15 +7,18 @@ Version 3-SNAPSHOT
 ADDED:
 
 - new libs.versions.toml file for new automatic catalog versions update
+- new method in class ReflectionExtensions for invoke a method from an object
 
 CHANGED:
 
 - rename of module to new name 'io.github.astrapisixtynine.jobj.reflect'
-- update gradle to new version 8.8
-- update of dependency lombok to new version 1.18.32
-- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor version 7.0.0.BETA1
-- update of test dependency test-object to new minor version 8.2
-- update of test dependency junit-jupiter to new version 5.11.0-M2
+- update gradle to new version 8.10.1
+- update of dependency lombok to new version 1.18.34
+- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor version 7.0.0.BETA2
+- update of dependency jobj-core to new major version 9
+- update of test dependency test-object to new major version 9
+- update of test dependency silly-collection~~~~ to new major version 9
+- update of test dependency junit-jupiter to new version 5.11.0
 
 Version 2.4
 -------------

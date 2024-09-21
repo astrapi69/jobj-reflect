@@ -26,6 +26,7 @@ package io.github.astrapi69.reflection;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -47,6 +48,29 @@ public final class ReflectionExtensions
 
 	private ReflectionExtensions()
 	{
+	}
+
+	/**
+	 * Invokes the given method on the given object. The given object owns the given method
+	 *
+	 * @param method
+	 *            the method
+	 * @param methodOwner
+	 *            the object that owns the given method
+	 * @param args
+	 *            the optional args
+	 * @return the return value of the given method
+	 * @throws InvocationTargetException
+	 *             is thrown if the underlying method throws an exception
+	 * @throws IllegalAccessException
+	 *             if the caller does not have access to the property accessor method
+	 *
+	 *
+	 */
+	public static Object invoke(Object methodOwner, Method method, Object... args)
+		throws InvocationTargetException, IllegalAccessException
+	{
+		return method.invoke(methodOwner, args);
 	}
 
 	/**
@@ -194,8 +218,6 @@ public final class ReflectionExtensions
 	 *            the source field
 	 * @throws IllegalAccessException
 	 *             is thrown if an illegal on create an instance or access a method
-	 * @throws SecurityException
-	 *             is thrown if a security manager says no
 	 */
 	public static <T> void setFieldValue(final @NonNull T source, final @NonNull T target,
 		final @NonNull Field sourceField) throws IllegalAccessException
@@ -317,7 +339,6 @@ public final class ReflectionExtensions
 	 *
 	 * @param cls
 	 *            The class object to get the field names.
-	 *
 	 * @return Gets all field names from the given class as an String list.
 	 */
 	public static List<String> getFieldNames(final @NonNull Class<?> cls)
@@ -334,7 +355,6 @@ public final class ReflectionExtensions
 	 *            The class object to get the field names
 	 * @param ignoreFieldNames
 	 *            a list with field names that shell be ignored
-	 *
 	 * @return Gets all field names from the given class as an String list minus the given ignored
 	 *         field names
 	 */
@@ -354,7 +374,6 @@ public final class ReflectionExtensions
 	 *            The class object to get the field names
 	 * @param ignoreFieldNames
 	 *            a optional array with the field names that shell be ignored
-	 *
 	 * @return Gets all field names from the given class as an String list minus the given optional
 	 *         array of ignored field names
 	 */
@@ -433,7 +452,6 @@ public final class ReflectionExtensions
 	 *
 	 * @param cls
 	 *            The class object to get the method names.
-	 *
 	 * @return Gets all method names from the given class as an String array.
 	 */
 	public static String[] getMethodNames(final @NonNull Class<?> cls)
@@ -455,7 +473,6 @@ public final class ReflectionExtensions
 	 *            A list with the field names.
 	 * @param prefix
 	 *            The prefix for the method name.
-	 *
 	 * @return the method names with prefix from field names
 	 */
 	public static Map<String, String> getMethodNamesWithPrefixFromFieldNames(
@@ -562,7 +579,7 @@ public final class ReflectionExtensions
 
 	/**
 	 * Gets the default field names that can be always ignored
-	 * 
+	 *
 	 * @return the default field names that can be always ignored
 	 */
 	public static String[] getDefaultIgnoreFieldNames()

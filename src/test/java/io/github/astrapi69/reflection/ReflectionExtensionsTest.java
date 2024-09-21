@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,30 @@ public class ReflectionExtensionsTest
 	{
 		final BeanTester beanTester = new BeanTester();
 		beanTester.testBean(ReflectionExtensions.class);
+	}
+
+	/**
+	 * Test method for {@link ReflectionExtensions#copyOfArray(Object)}
+	 */
+	@Test
+	public void testInvoke()
+		throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
+	{
+
+		class NicePerson
+		{
+			public String greet(String name)
+			{
+				return "Hello, " + name + "!";
+			}
+		}
+		NicePerson person = new NicePerson();
+
+		Method method = NicePerson.class.getMethod("greet", String.class);
+		Object result = ReflectionExtensions.invoke(person, method, "John");
+		String actual = (String)result;
+		String expected = "Hello, John!";
+		assertEquals(actual, expected);
 	}
 
 	/**

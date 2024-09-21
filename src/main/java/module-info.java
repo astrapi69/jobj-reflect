@@ -22,7 +22,7 @@ module io.github.astrapisixtynine.jobj.reflect
 {
 	requires static lombok;
 	requires java.logging;
-	requires jobj.core.main;
+	requires io.github.astrapisixtynine.jobj.core;
 	requires modjenesis.main;
 
 	exports io.github.astrapi69.reflection;

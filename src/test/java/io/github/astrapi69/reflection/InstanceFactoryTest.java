@@ -43,7 +43,6 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
-import io.github.astrapi69.lang.ClassExtensions;
 import org.junit.jupiter.api.Test;
 import org.meanbean.test.BeanTester;
 
@@ -52,6 +51,7 @@ import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.map.MapFactory;
 import io.github.astrapi69.collection.pair.KeyValuePair;
 import io.github.astrapi69.collection.set.SetFactory;
+import io.github.astrapi69.lang.ClassExtensions;
 import io.github.astrapi69.test.object.A;
 import io.github.astrapi69.test.object.Person;
 import io.github.astrapi69.test.object.PremiumMember;
@@ -223,8 +223,7 @@ class InstanceFactoryTest
 		fullyQualifiedClassName = classCanonicalName;
 		actual = InstanceFactory.newOptionalInstance(fullyQualifiedClassName);
 		assertNotNull(actual);
-		expected = Optional.of(Person.builder()
-				.build());
+		expected = Optional.of(Person.builder().build());
 		assertEquals(expected, actual);
 	}
 
