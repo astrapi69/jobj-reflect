@@ -4,6 +4,14 @@
 Version 3-SNAPSHOT
 -------------
 
+BREAKING:
+
+- Java 25 is the minimum, up from 17: the family builds, tests and releases on JDK 25
+  (astrapi69/mystic-crypt#234) (#12)
+- the module requires `io.github.astrapisixtynine.jobj.core`, the module name jobj-core uses since 9;
+  2.4 required `jobj.core.main`, the name of jobj-core 8, so on the module path this version needs
+  jobj-core 9 or later (astrapi69/swing-table-components#14)
+
 ADDED:
 
 - new libs.versions.toml file for new automatic catalog versions update
@@ -11,6 +19,17 @@ ADDED:
 
 CHANGED:
 
+- built with Gradle 9.8.2; the grgit and hierynomus license plugins are gone: a release is tagged
+  through git (`gradle/tagging.gradle`), and Spotless writes the license header from
+  `src/main/resources/license-header.txt` (#12)
+- `versionCatalogUpdate` chooses versions through a selector of its own: a stable version moves only to
+  a stable one, and nothing to a snapshot; meanbean stays at 3.0.0-M9, its latest, a milestone with no
+  stable 3.x release (#12)
+- dependencies raised by `versionCatalogUpdate`: jobj-core 9 -> 9.1, lombok 1.18.34 -> 1.18.48, and for
+  the tests junit-jupiter 5.11.0 -> 6.1.3, junit-platform-launcher 1.11.0 -> 6.1.3, silly-bean 2 -> 3.0,
+  silly-collection 28 -> 28.2, test-object 9 -> 9.1; the plugins spotless 7.0.0.BETA2 -> 8.10.4, lombok
+  8.10 -> 9.8.3, versions 0.51.0 -> 0.67.0 under its new id `io.github.ben-manes.versions`, and
+  version-catalog-update 0.8.4 -> 1.1.2 (#12)
 - releases go to Maven Central through the Central Portal, as in the rest of the family: the
   `com.gradleup.nmcp` plugin uploads, the maintainer releases each deployment in the Portal, and a
   `RELEASE-*` tag runs the new `publish.yml`, which signs with the signing subkey that the secret
