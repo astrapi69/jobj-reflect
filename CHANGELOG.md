@@ -1,7 +1,7 @@
 ## Change log
 ----------------------
 
-Version 3-SNAPSHOT
+Version 3
 -------------
 
 BREAKING:
@@ -11,6 +11,8 @@ BREAKING:
 - the module requires `io.github.astrapisixtynine.jobj.core`, the module name jobj-core uses since 9;
   2.4 required `jobj.core.main`, the name of jobj-core 8, so on the module path this version needs
   jobj-core 9 or later (astrapi69/swing-table-components#14)
+- the module is named `io.github.astrapisixtynine.jobj.reflect`, up from `jobj.reflect.main`: a module that
+  requires this one changes its `requires` line
 
 ADDED:
 
@@ -37,14 +39,7 @@ CHANGED:
   endpoint this project published to is shut down; its settings are gone, among them the switch that
   held the checksums to md5 and sha1, and snapshots resolve from the Central Portal's snapshot
   repository (#11)
-- rename of module to new name 'io.github.astrapisixtynine.jobj.reflect'
-- update gradle to new version 8.10.1
-- update of dependency lombok to new version 1.18.34
-- update of gradle-plugin dependency 'com.diffplug.spotless:spotless-plugin-gradle' to new minor version 7.0.0.BETA2
-- update of dependency jobj-core to new major version 9
-- update of test dependency test-object to new major version 9
-- update of test dependency silly-collection to new major version 9
-- update of test dependency junit-jupiter to new version 5.11.0
+- `HELP.md`, the project template's help with the OSSRH setup, is removed (#14)
 
 Version 2.4
 -------------
