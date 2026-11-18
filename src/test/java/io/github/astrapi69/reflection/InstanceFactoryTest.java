@@ -49,7 +49,6 @@ import org.meanbean.test.BeanTester;
 import io.github.astrapi69.collection.array.ArrayFactory;
 import io.github.astrapi69.collection.list.ListFactory;
 import io.github.astrapi69.collection.map.MapFactory;
-import io.github.astrapi69.collection.pair.KeyValuePair;
 import io.github.astrapi69.collection.set.SetFactory;
 import io.github.astrapi69.lang.ClassExtensions;
 import io.github.astrapi69.test.object.A;
@@ -470,7 +469,7 @@ class InstanceFactoryTest
 		Optional<?> expected;
 		Optional<?> actual;
 		A a;
-		KeyValuePair<String, Integer> firstEntry;
+		Map.Entry<String, Integer> firstEntry;
 		Map<String, Integer> map;
 		Map<String, Integer> mapActual;
 		Map<String, Integer> mapExpected;
@@ -507,7 +506,7 @@ class InstanceFactoryTest
 		int[] intArrayExpected = ArrayFactory.newIntArray(0, 0, 0);
 		assertTrue(Arrays.equals(intArrayActual, intArrayExpected));
 		// new scenario with hashmap ...
-		firstEntry = KeyValuePair.<String, Integer> builder().key("foo").value(1).build();
+		firstEntry = Map.entry("foo", 1);
 		map = MapFactory.newHashMap(ListFactory.newArrayList(firstEntry));
 		actual = InstanceFactory.newGenericOptionalInstance(map);
 		assertNotNull(actual);
