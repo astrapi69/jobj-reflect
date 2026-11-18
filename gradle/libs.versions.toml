@@ -12,7 +12,7 @@ lombok-version = "1.18.48"
 meanbean-version = "3.0.0-M9"
 modjenesis-version = "1.2"
 silly-bean-version = "3.0"
-silly-collection-version = "28.2"
+silly-collection-version = "30.0"
 test-object-version = "9.1"
 
 [libraries]
